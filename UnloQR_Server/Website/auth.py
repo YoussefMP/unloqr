@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from werkzeug.security import  generate_password_hash, check_password_hash
-from .models import User
-from . import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from .client_comms import send_confirmation_email, get_token_seed
+from itsdangerous import SignatureExpired
+from .models import User, Log
+from . import db_man
+import datetime
 
 auth = Blueprint("auth", __name__)
 
@@ -35,6 +38,25 @@ def logout():
     return redirect(url_for("auth.login"))
 
 
+@auth.route("/confirm_email/<token>")
+def reroute_to_confirmation(token):
+    try:
+        email = get_token_seed(token)
+    except SignatureExpired:
+        return "<h1> Der Token ist abgelaufen, bitte fordern Sie eine neue Identifikationsmail an </h1> "
+        pass
+
+    db_man.update_email_confirmed_status(User.query.filter_by(email=email).first())
+
+    log_entry = Log(video="Hello", activity="Email-confirm", user_id=User.query.filter_by(email=email).first().id)
+    db_man.add_log(log_entry)
+
+
+    # TODO: Reroute after some time
+
+    return "<h1> Confirmed </h1>"
+
+
 @auth.route("/sign-up", methods=["GET", "POST"])
 def sign_up():
     if request.method == "POST":
@@ -59,10 +81,25 @@ def sign_up():
         else:
             new_user = User(email=email, first_name=first_name,
                             password=generate_password_hash(password1, method="sha256"))
-            db.session.add(new_user)
-            db.session.commit()
-            flash("Konto wurde erstellt", category="success")
+
+            db_man.add_user(new_user)
+
+            log_entry = Log(video="Hello", activity="Sign-Up", user_id=new_user.id)
+            db_man.add_log(log_entry)
+
+            flash("Konto wurde erfolgreich erstellt, bitte bestätigen Sie Ihre E-Mail-Adresse.", category="success")
+
+            send_confirmation_email(email)
 
             return redirect(url_for("views.home"))
 
     return render_template("sign_up.html", user=current_user)
+
+
+@auth.route("/logs/<uid>")
+@login_required
+def logs_view(uid):
+    user = User.query.filter_by(id=uid).first()
+
+
+    return render_template("Logs.html", user=user)

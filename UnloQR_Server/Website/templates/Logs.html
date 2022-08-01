@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block title %} Home {% endblock %}
+
+{% block content%}
+<h1 align="center">Logs ({{ user.first_name }})</h1>
+<body>
+
+  <div class="row align-items-end">
+    <div class="col text-left">
+      <p class=" col text-left ml-1"><a class="link-primary" href="{{url_for('views.home')}}"><u><-Back</u></a></p>
+    </div>
+
+    <div class="col text-right">
+      <button type="submit" class="btn btn-danger mr-4 mb-2" ><i class="fa fa-minus"></i> Delete User</button>
+    </div>
+  </div>
+
+
+  <table class="table mt-3">
+    <thread>
+      <tr>
+        <th class="col text_left col-md-3"> Time </th>
+        <th class="col text_left col-md-auto"> Activity </th>
+        <th class="col-lg- text-center col-md-auto"> Video </th>
+      </tr>
+    </thread>
+    <tbody>
+        {% for log in user.logs[::-1] %}
+        <tr>
+          <th class="text-left">{{ log.time }}</th>
+          <td class="text-left">{{ log.activity }}</td>
+          <td class="text-center"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Watch</a></td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+  </table>
+</body>
+{% endblock %}
