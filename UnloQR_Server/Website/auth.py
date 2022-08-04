@@ -65,43 +65,43 @@ def reroute_to_confirmation(token):
     return render_template("set_password.html")
 
 
-# @auth.route("/sign-up", methods=["GET", "POST"])
-# def sign_up():
-#     if request.method == "POST":
-#         email = request.form.get("email")
-#         first_name = request.form.get("firstName")
-#         password1 = request.form.get("password1")
-#         password2 = request.form.get("password2")
-#
-#         user = User.query.filter_by(email=email).first()
-#         if user:
-#             flash("Die email-adresse ist schon verwendet", category="error")
-#         elif len(email) < 6:
-#             flash("Email muss mehr als 6 Buchstaben enthalten", category="error")
-#         elif len(first_name) < 2:
-#             flash("Vorname muss mehr als 2 Buchstaben enthalten", category="error")
-#         elif password2 != password1:
-#             print(password1, password2)
-#             print(password1 == password2)
-#             flash("Passwörter stimmen nicht überein", category="error")
-#         elif len(password1) < 7:
-#             flash("Passwort ist zu kurz", category="error")
-#         else:
-#             new_user = User(email=email, first_name=first_name,
-#                             password=generate_password_hash(password1, method="sha256"))
-#
-#             db_man.add_user(new_user)
-#
-#             log_entry = Log(video="Hello", activity="Sign-Up", user_id=new_user.id)
-#             db_man.add_log(log_entry)
-#
-#             flash("Konto wurde erfolgreich erstellt, bitte bestätigen Sie Ihre E-Mail-Adresse.", category="success")
-#
-#             send_confirmation_email(email, "auth.reroute_to_confirmation")
-#
-#             return redirect(url_for("views.home"))
-#
-#     return render_template("sign_up.html", user=current_user)
+@auth.route("/sign-up", methods=["GET", "POST"])
+def sign_up():
+    if request.method == "POST":
+        email = request.form.get("email")
+        first_name = request.form.get("firstName")
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash("Die email-adresse ist schon verwendet", category="error")
+        elif len(email) < 6:
+            flash("Email muss mehr als 6 Buchstaben enthalten", category="error")
+        elif len(first_name) < 2:
+            flash("Vorname muss mehr als 2 Buchstaben enthalten", category="error")
+        elif password2 != password1:
+            print(password1, password2)
+            print(password1 == password2)
+            flash("Passwörter stimmen nicht überein", category="error")
+        elif len(password1) < 7:
+            flash("Passwort ist zu kurz", category="error")
+        else:
+            new_user = User(email=email, first_name=first_name,
+                            password=generate_password_hash(password1, method="sha256"))
+
+            db_man.add_user(new_user)
+
+            log_entry = Log(video="Hello", activity="Sign-Up", user_id=new_user.id)
+            db_man.add_log(log_entry)
+
+            flash("Konto wurde erfolgreich erstellt, bitte bestätigen Sie Ihre E-Mail-Adresse.", category="success")
+
+            send_confirmation_email(email, "auth.reroute_to_confirmation")
+
+            return redirect(url_for("views.home"))
+
+    return render_template("sign_up.html", user=current_user)
 
 
 @auth.route("/logs/<uid>")
