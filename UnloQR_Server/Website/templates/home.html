@@ -5,7 +5,8 @@
 <body>
 
   <div class="text-right">
-    <button type="submit" class="btn btn-primary mr-4 mb-2"><i class="fa fa-plus"></i> Add User</button>
+    <a href="{{ url_for('auth.add_user_view') }}" role="button" class="btn btn-primary mr-4 mb-2">
+      <i class="fa fa-plus"></i> Add User</a>
   </div>
 
   <table class="table mt-3">

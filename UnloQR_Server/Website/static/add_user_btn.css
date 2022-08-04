@@ -12,3 +12,8 @@
 .btn:hover {
   background-color: RoyalBlue;
 }
+
+.custom {
+    width: 100px !important;
+    height: 45px !important;
+}

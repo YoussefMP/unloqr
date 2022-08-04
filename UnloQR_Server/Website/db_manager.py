@@ -24,3 +24,8 @@ class DBManager:
     def update_email_confirmed_status(self, user):
         user.email_confirmed = True
         self.data_base.session.commit()
+
+    def delete_user_by_id(self, user):
+        self.data_base.session.delete(user.first())
+        self.data_base.session.commit()
+
