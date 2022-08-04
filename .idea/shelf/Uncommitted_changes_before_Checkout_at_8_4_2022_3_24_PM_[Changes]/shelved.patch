@@ -1,0 +1,57 @@
+Index: UnloQR_Server/Website/auth.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from flask import Blueprint, render_template, request, flash, redirect, url_for\r\nfrom flask_login import login_user, login_required, logout_user, current_user\r\nfrom werkzeug.security import generate_password_hash, check_password_hash\r\nfrom .client_msg_gen import send_confirmation_email, get_token_seed\r\nfrom validate_email_address import validate_email\r\nfrom itsdangerous import SignatureExpired\r\nfrom .models import User, Log\r\nfrom . import db_man\r\nimport datetime\r\n\r\nauth = Blueprint(\"auth\", __name__)\r\n\r\n\r\n@auth.route(\"/login\", methods=[\"GET\", \"POST\"])\r\ndef login():\r\n    if request.method == \"POST\":\r\n        email = request.form.get(\"email\")\r\n        password = request.form.get(\"password\")\r\n\r\n        user = User.query.filter_by(email=email).first()\r\n        if user:\r\n            if check_password_hash(user.password, password):\r\n                flash(\"Logged in Successfully!\", category=\"success\")\r\n                login_user(user, remember=False)\r\n                return redirect(url_for(\"views.home\"))\r\n            else:\r\n                flash(\"Incorrect password, try again.\", category=\"error\")\r\n        else:\r\n            flash(f\"Es existiert kein Konto für die email-adresse: {email}.\", category=\"error\")\r\n\r\n    return render_template(\"login.html\", user=current_user)\r\n\r\n\r\n@auth.route(\"/logout\")\r\n@login_required\r\ndef logout():\r\n    logout_user()\r\n    return redirect(url_for(\"auth.login\"))\r\n\r\n\r\n@auth.route(\"/confirm_email/<token>\", methods=[\"GET\", \"POST\"])\r\ndef reroute_to_confirmation(token):\r\n\r\n    if request.method == \"POST\":\r\n        password1 = request.form.get(\"password1\")\r\n        password2 = request.form.get(\"password2\")\r\n        try:\r\n            email = get_token_seed(token)\r\n        except SignatureExpired:\r\n            return \"<h1> Der Token ist abgelaufen, bitte fordern Sie eine neue Identifikationsmail an </h1> \"\r\n\r\n        if password2 == password1:\r\n            db_man.update_email_confirmed_status(User.query.filter_by(email=email).first())\r\n            db_man.set_password(password1)\r\n\r\n            log_entry = Log(video=\"Hello\", activity=\"Email-confirm\", user_id=User.query.filter_by(email=email).first().id)\r\n            db_man.add_log(log_entry)\r\n\r\n            flash(\"Passwort gespeichert!\", category=\"success\")\r\n\r\n            return redirect(url_for(\"auth.login\"))\r\n        else:\r\n            flash(\"Passwörter stimmen nicht überein\", category=\"error\")\r\n\r\n    return render_template(\"set_password.html\")\r\n\r\n\r\n@auth.route(\"/sign-up\", methods=[\"GET\", \"POST\"])\r\ndef sign_up():\r\n    if request.method == \"POST\":\r\n        email = request.form.get(\"email\")\r\n        first_name = request.form.get(\"firstName\")\r\n        password1 = request.form.get(\"password1\")\r\n        password2 = request.form.get(\"password2\")\r\n\r\n        user = User.query.filter_by(email=email).first()\r\n        if user:\r\n            flash(\"Die email-adresse ist schon verwendet\", category=\"error\")\r\n        elif len(email) < 6:\r\n            flash(\"Email muss mehr als 6 Buchstaben enthalten\", category=\"error\")\r\n        elif len(first_name) < 2:\r\n            flash(\"Vorname muss mehr als 2 Buchstaben enthalten\", category=\"error\")\r\n        elif password2 != password1:\r\n            print(password1, password2)\r\n            print(password1 == password2)\r\n            flash(\"Passwörter stimmen nicht überein\", category=\"error\")\r\n        elif len(password1) < 7:\r\n            flash(\"Passwort ist zu kurz\", category=\"error\")\r\n        else:\r\n            new_user = User(email=email, first_name=first_name,\r\n                            password=generate_password_hash(password1, method=\"sha256\"))\r\n\r\n            db_man.add_user(new_user)\r\n\r\n            log_entry = Log(video=\"Hello\", activity=\"Sign-Up\", user_id=new_user.id)\r\n            db_man.add_log(log_entry)\r\n\r\n            flash(\"Konto wurde erfolgreich erstellt, bitte bestätigen Sie Ihre E-Mail-Adresse.\", category=\"success\")\r\n\r\n            send_confirmation_email(email, \"auth.reroute_to_confirmation\")\r\n\r\n            return redirect(url_for(\"views.home\"))\r\n\r\n    return render_template(\"sign_up.html\", user=current_user)\r\n\r\n\r\n@auth.route(\"/logs/<uid>\")\r\n@login_required\r\ndef logs_view(uid):\r\n    user = User.query.filter_by(id=uid).first()\r\n    return render_template(\"Logs.html\", user=user)\r\n\r\n\r\n# background process happening without any refreshing\r\n@auth.route(\"/del_user/<uid>\")\r\n@login_required\r\ndef delete_user_with_id(uid):\r\n    db_man.delete_user_by_id(User.query.filter_by(id=uid))\r\n    flash(\"Logged in Successfully!\", category=\"success\")\r\n    return redirect(url_for(\"views.home\"))\r\n\r\n\r\n@auth.route(\"/add_user\", methods=[\"GET\", \"POST\"])\r\n@login_required\r\ndef add_user_view():\r\n\r\n    if request.method == \"POST\":\r\n        email = request.form.get(\"email\")\r\n        isvalid = validate_email(email)\r\n\r\n        if isvalid:\r\n            flash(\"User added to database!\", category=\"success\")\r\n\r\n            user = User.query.filter_by(email=email).first()\r\n            if user:\r\n                flash(\"Die email-adresse ist schon verwendet\", category=\"error\")\r\n            else:\r\n                new_user = User(email=email)\r\n\r\n                db_man.add_user(new_user)\r\n\r\n                log_entry = Log(video=\"Hello\", activity=\"User Added\", user_id=new_user.id)\r\n                db_man.add_log(log_entry)\r\n\r\n                flash(f\"Confirmation email sent to {email}.\", category=\"success\")\r\n\r\n                send_confirmation_email(email, \"auth.reroute_to_confirmation\")\r\n\r\n                return redirect(url_for(\"views.home\"))\r\n        else:\r\n            flash(\"Invalid email\", category=\"error\")\r\n\r\n    return render_template(\"AddUser.html\", user=current_user)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/UnloQR_Server/Website/auth.py b/UnloQR_Server/Website/auth.py
+--- a/UnloQR_Server/Website/auth.py	(revision 6124301c2f6cfcafda31bf387cbfa34dd2cbdf6e)
++++ b/UnloQR_Server/Website/auth.py	(date 1659618662445)
+@@ -2,7 +2,7 @@
+ from flask_login import login_user, login_required, logout_user, current_user
+ from werkzeug.security import generate_password_hash, check_password_hash
+ from .client_msg_gen import send_confirmation_email, get_token_seed
+-from validate_email_address import validate_email
++from validate_email  import validate_email
+ from itsdangerous import SignatureExpired
+ from .models import User, Log
+ from . import db_man
+Index: .idea/UnloQR.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\" />\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/UnloQR.iml b/.idea/UnloQR.iml
+--- a/.idea/UnloQR.iml	(revision 6124301c2f6cfcafda31bf387cbfa34dd2cbdf6e)
++++ b/.idea/UnloQR.iml	(date 1659618830808)
+@@ -2,7 +2,7 @@
+ <module type="PYTHON_MODULE" version="4">
+   <component name="NewModuleRootManager">
+     <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.10.4 (C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python310\\python.exe)\" project-jdk-type=\"Python SDK\" />\r\n  <component name=\"PyCharmProfessionalAdvertiser\">\r\n    <option name=\"shown\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 6124301c2f6cfcafda31bf387cbfa34dd2cbdf6e)
++++ b/.idea/misc.xml	(date 1659618830818)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10.4 (C:\Users\User\AppData\Local\Programs\Python\Python310\python.exe)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9" project-jdk-type="Python SDK" />
+   <component name="PyCharmProfessionalAdvertiser">
+     <option name="shown" value="true" />
+   </component>
