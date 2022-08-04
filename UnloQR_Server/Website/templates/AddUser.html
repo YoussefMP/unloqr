@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block title %} Add User {% endblock %}
+
+{% block content%}
+
+<h1 align="center">Add User</h1>
+<body>
+<form method="POST">
+  <div class="form-group">
+    <label for="email">Email Address</label>
+    <input
+      type="email"
+      class="form-control"
+      id="email"
+      name="email"
+      placeholder="Enter email"
+    />
+  </div>
+
+  <link rel="stylesheet" href="./static/add_user_btn.css">
+  <div class="text-right">
+    <a href="{{ url_for('views.home' )}}" role="button" class="btn btn-primary custom"> Back </a>
+    <button type="submit" class="btn btn-primary custom">Submit</button>
+  </div>
+
+</form>
+</body>
+{% endblock %}

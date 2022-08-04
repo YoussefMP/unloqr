@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %} Home {% endblock %}
+
+{% block content%}
+<h1 align="center">Users</h1>
+<body>
+
+  <div class="text-right">
+    <a href="{{ url_for('auth.add_user_view') }}" role="button" class="btn btn-primary mr-4 mb-2">
+      <i class="fa fa-plus"></i> Add User</a>
+  </div>
+
+  <table class="table mt-3">
+    <thread>
+      <tr>
+        {% for header in db.query.statement.columns.keys()%}
+        {% if header != "password" %}
+          <th class="col text-left col-md-auto"> {{ header }} </th>
+        {% endif %}
+        {% endfor %}
+        <th class="col text-left col-md-auto"> Logs </th>
+      </tr>
+    </thread>
+    <tbody>
+        {% for user in db.query.all() %}
+        <tr>
+          <th class="text-left">{{ user.id }}</th>
+          <td class="text-left">{{ user.email }}</td>
+          <td class="text-left">{{ user.first_name }}</td>
+          {% if user.email_confirmed %}
+            <td class="text-left"> Yes </td>
+          {% else %}
+            <td class="text-left"> No </td>
+          {% endif %}
+          <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+  </table>
+</body>
+{% endblock %}
