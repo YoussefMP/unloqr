@@ -1,9 +1,8 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from .client_msg_gen import send_confirmation_email
 from flask import Blueprint, request
 from .models import User, Log
-import Messages as msg
-from . import db_man
+from . import messages as msg
 
 client_comms = Blueprint("client_comms", __name__)
 
@@ -40,12 +39,12 @@ def access_req():
 
     email = data["email"]
     password = data["password"]
-    dev_id = data["dev_id"]
+    dev_name = data["dev_name"]
 
     user = User.query.filer_by(email=email).first()
     if user:
         if check_password_hash(user.password, password):
-            if dev_id in user.allowed_devices:
+            if dev_name in user.allowed_devices:
                 # TODO: Start thread for unlocking and recording
                 response = msg.LOGIN_GRANTED
             else:

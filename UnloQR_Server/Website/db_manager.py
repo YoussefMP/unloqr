@@ -1,6 +1,6 @@
+from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from os import path
-import time
 
 
 class DBManager:
@@ -10,15 +10,25 @@ class DBManager:
 
     def create_database(self, app):
         if not path.exists('Website/' + self.name):
+            self.data_base.drop_all()
             self.data_base.create_all(app=app)
             print("Created Database!")
+            # TODO add admin account
 
-    def add_user(self, new_user):
+    ########################
+    # User table functions #
+    ########################
+    def add_user(self, new_user, device):
         self.data_base.session.add(new_user)
+        new_user.allowed_devices.append(device)
         self.data_base.session.commit()
 
-    def add_log(self, log_entry):
-        self.data_base.session.add(log_entry)
+    def set_name(self, user, name):
+        user.name = name
+        self.data_base.session.commit()
+
+    def set_password(self, user, password):
+        user.password = generate_password_hash(password, method="sha256")
         self.data_base.session.commit()
 
     def update_email_confirmed_status(self, user):
@@ -28,4 +38,21 @@ class DBManager:
     def delete_user_by_id(self, user):
         self.data_base.session.delete(user.first())
         self.data_base.session.commit()
+    #####################################################
+
+    #######################
+    # Log table functions #
+    #######################
+    def add_log(self, log_entry):
+        self.data_base.session.add(log_entry)
+        self.data_base.session.commit()
+    #####################################################
+
+    ##########################
+    # Device table functions #
+    ##########################
+    def add_device(self, device):
+        self.data_base.session.add(device)
+        self.data_base.session.commit()
+    #####################################################
 

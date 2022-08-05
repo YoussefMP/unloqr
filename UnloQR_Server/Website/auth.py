@@ -4,9 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .client_msg_gen import send_confirmation_email, get_token_seed
 from validate_email_address import validate_email
 from itsdangerous import SignatureExpired
-from .models import User, Log
+from .models import User, Log, Device
 from . import db_man
-import datetime
 
 auth = Blueprint("auth", __name__)
 
@@ -42,6 +41,7 @@ def logout():
 def reroute_to_confirmation(token):
 
     if request.method == "POST":
+        name = request.form.get("name")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
         try:
@@ -49,9 +49,12 @@ def reroute_to_confirmation(token):
         except SignatureExpired:
             return "<h1> Der Token ist abgelaufen, bitte fordern Sie eine neue Identifikationsmail an </h1> "
 
+        user = User.query.filter_by(email=email).first()
+
         if password2 == password1:
-            db_man.update_email_confirmed_status(User.query.filter_by(email=email).first())
-            db_man.set_password(password1)
+            db_man.update_email_confirmed_status(user)
+            db_man.set_name(user, name)
+            db_man.set_password(user, password1)
 
             log_entry = Log(video="Hello", activity="Email-confirm", user_id=User.query.filter_by(email=email).first().id)
             db_man.add_log(log_entry)
@@ -69,16 +72,17 @@ def reroute_to_confirmation(token):
 def sign_up():
     if request.method == "POST":
         email = request.form.get("email")
-        first_name = request.form.get("firstName")
+        name = request.form.get("firstName")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
 
         user = User.query.filter_by(email=email).first()
+
         if user:
             flash("Die email-adresse ist schon verwendet", category="error")
         elif len(email) < 6:
             flash("Email muss mehr als 6 Buchstaben enthalten", category="error")
-        elif len(first_name) < 2:
+        elif len(name) < 2:
             flash("Vorname muss mehr als 2 Buchstaben enthalten", category="error")
         elif password2 != password1:
             print(password1, password2)
@@ -87,10 +91,14 @@ def sign_up():
         elif len(password1) < 7:
             flash("Passwort ist zu kurz", category="error")
         else:
-            new_user = User(email=email, first_name=first_name,
+            new_user = User(email=email, name=name,
                             password=generate_password_hash(password1, method="sha256"))
 
             db_man.add_user(new_user)
+
+            # TODO: Remove this default entry
+            # device = Device(dev_name="A101")
+            # db_man.add_allowed_device(device)
 
             log_entry = Log(video="Hello", activity="Sign-Up", user_id=new_user.id)
             db_man.add_log(log_entry)
