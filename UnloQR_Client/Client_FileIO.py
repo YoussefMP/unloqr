@@ -1,5 +1,6 @@
 import configparser
-from os import path
+import os
+from os import path, makedirs
 import qrcode
 
 
@@ -10,6 +11,8 @@ class ConfigManager:
         self.c_path = path.join(d_path + "/config.ini")
         self.config = configparser.ConfigParser()
 
+        if not path.exists(self.dir):
+            makedirs(self.dir)
         if path.exists(self.c_path):
             self.config.read(self.c_path)
 

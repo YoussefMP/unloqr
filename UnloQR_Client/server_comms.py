@@ -32,8 +32,9 @@ class Client:
             This function calls the FileIO to set up the config file on receiving new_id.
             :param idx: New ID received from the server or None
             """
-            if idx:
+            if idx != "____":
                 self.c_man.initialize_config_file(idx)
+
 
         client.emit("get_ID", data, callback=set_id_in_config)
 
