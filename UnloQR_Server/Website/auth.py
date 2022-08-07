@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .client_msg_gen import send_confirmation_email, get_token_seed
-from validate_email_address import validate_email
+from validate_email import validate_email
 from itsdangerous import SignatureExpired
 from .models import User, Log, Device
 from time import sleep
