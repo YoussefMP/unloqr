@@ -5,10 +5,11 @@ from .client_msg_gen import send_confirmation_email, get_token_seed
 from validate_email_address import validate_email
 from itsdangerous import SignatureExpired
 from .models import User, Log, Device
-from threading import Thread
 from time import sleep
 from . import db_man
-import cv2 as cv2
+import numpy as np
+from io import BytesIO
+import cv2
 
 auth = Blueprint("auth", __name__)
 
@@ -165,8 +166,8 @@ def add_user_view():
 
 
 # _________________ Video Handling _________________
-def generate_frames(uid):
-    cap = cv2.VideoCapture("./Website/static/AMV.mp4")
+def generate_frames(path):
+    cap = cv2.VideoCapture(path)
 
     while cap.isOpened():
         success, frame = cap.read()
@@ -181,8 +182,13 @@ def generate_frames(uid):
     cv2.destroyAllWindows()
 
 
-@auth.route("/Vid_log/<uid>", methods=["GET"])
-def open_vid_modal(uid):
-    return Response(generate_frames(uid), mimetype='multipart/x-mixed-replace; boundary=frame')
+@auth.route("/Vid_log/<vid_path>", methods=["GET"])
+def open_vid_modal(vid_path):
+    from . import app
+    with app.app_context():
+        vid_path = Log.query.filter_by(id=vid_path).first().video
+
+    print(vid_path)
+    return Response(generate_frames(vid_path), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

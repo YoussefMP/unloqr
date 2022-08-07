@@ -8,7 +8,7 @@ class Log(db.Model):
     time = db.Column(db.DateTime(timezone=False), default=func.now())
     activity = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    video = db.Column(db.LargeBinary)
+    video = db.Column(db.String(200))
 
 
 user_device = db.Table("user_device",

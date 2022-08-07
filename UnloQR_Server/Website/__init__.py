@@ -5,18 +5,21 @@ from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
 
+__DEBUG__ = False
 db_man = DBManager("database.db")
 db = db_man.data_base
 socketio = None
+app = None
 
 
 def create_app():
+    global app
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "One Secret key to generate here"
     app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{db_man.name}'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
-
-    serv_socketio = SocketIO(app)
+    app.config["UPLOAD_FOLDER"] = "static/uploads"
+    serv_socketio = SocketIO(app, max_http_buffer_size=(50 * 1000 * 1000))
     set_socketio(serv_socketio)
 
     db.init_app(app)
@@ -38,18 +41,20 @@ def create_app():
     # TODO: Delete when insertion of devices
     with app.app_context():
         user = User.query.filter_by(email="admin@admin").first()
+        print(f"Found {user}")
         if not user:
             dev = Device(dev_name="Q101")
             db_man.add_device(dev)
             user = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
             db_man.add_user(user, device=dev)
 
-            vid_file = open("./Website/static/AMV.mp4", "rb")
-            log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
-                            user_id=User.query.filter_by(email=user.email).first().id,
-                            video=vid_file.read()
-                            )
-            db_man.add_log(log_entry)
+            try:
+                log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
+                                user_id=User.query.filter_by(email=user.email).first().id,
+                                )
+                db_man.add_log(log_entry)
+            except Exception as e:
+                print(e)
 
             print(f"user logs = {user.logs}")
 

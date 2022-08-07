@@ -5,20 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3aaea0ff-aeea-40a5-ae2b-5c22cd501398" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/RB_Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../UnloQR_Client/RB_Client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/_Config/ID_Code.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/_Config/config.ini" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../UnloQR_Client/server_comms.py" beforeDir="false" afterPath="$PROJECT_DIR$/../UnloQR_Client/server_comms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/ClientCommunication.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/ClientCommunication.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Website/DevicesCommunications.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/DevicesCommunications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Website/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Website/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/database.db" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Website/db_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/db_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Website/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/templates/AddUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/Website/templates/VideoViewer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/static/AMV.mp4" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Website/templates/Logs.html" beforeDir="false" afterPath="$PROJECT_DIR$/Website/templates/Logs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/templates/VideoViewer.html" beforeDir="false" afterPath="$PROJECT_DIR$/Website/templates/VideoViewer.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

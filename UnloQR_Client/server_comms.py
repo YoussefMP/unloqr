@@ -1,9 +1,6 @@
-from ServerHandler import handle_server_messages
 from Client_FileIO import ConfigManager
-from os import path
-import threading
-import requests
 import socketio
+import base64
 
 
 client = socketio.Client()
@@ -37,7 +34,26 @@ class Client:
 
         client.emit("get_ID", data, callback=set_id_in_config)
 
+    @client.event
+    def upload_file(self):
+        """
+        Upload video file to the server
+        :return:
+        """
+        name = "amv.mp4"
+        file = open("./static/AMV.mp4", "rb")
+        video = base64.b64encode(file.read())
+
+        data = {"file": video, "filename": name}
+        # data = {"filename": name}
+
+        client.emit("file_upload", data)
+
 
 def open_com_chanel(cl):
-    print("Say hello")
     cl.request_id()
+
+    print("Sending upload request")
+    cl.upload_file()
+    print("req sent...")
+
