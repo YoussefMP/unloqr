@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3aaea0ff-aeea-40a5-ae2b-5c22cd501398" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/RB_Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../UnloQR_Client/RB_Client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/_Config/ID_Code.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/_Config/config.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UnloQR_Client/server_comms.py" beforeDir="false" afterPath="$PROJECT_DIR$/../UnloQR_Client/server_comms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/ClientCommunication.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/ClientCommunication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/DevicesCommunications.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/DevicesCommunications.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/db_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/db_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/templates/AddUser.html" beforeDir="false" afterPath="$PROJECT_DIR$/Website/templates/VideoViewer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/templates/Logs.html" beforeDir="false" afterPath="$PROJECT_DIR$/Website/templates/Logs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Website/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +48,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
-    "last_opened_file_path": "C:/Users/Josepi/Desktop/AltaZ/UnloQR",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
+    "last_opened_file_path": "C:/Users/Josepi/Desktop/AltaZ/UnloQR/UnloQR_Client",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -46,7 +58,7 @@
       <recent name="C:\Users\Josepi\PycharmProjects\UnloQR_Server\Website" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main (1)">
+  <component name="RunManager" selected="Python.app">
     <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="UnloQR_Server" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -60,6 +72,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Website/__init__.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="UnloQR_Server" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -112,6 +145,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.app" />
         <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.__init__" />
       </list>

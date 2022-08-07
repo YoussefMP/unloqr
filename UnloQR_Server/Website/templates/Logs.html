@@ -48,12 +48,15 @@
         <tr>
           <th class="text-left">{{ log.time }}</th>
           <td class="text-left">{{ log.activity }}</td>
-          <td class="text-center"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Watch</a></td>
+          <td class="text-center"><a class="link-primary" href="{{ url_for('auth.open_vid_modal', uid=user.id) }}">Watch</a></td>
         </tr>
         {% endfor %}
 
     </tbody>
   </table>
+
+{% block VidModal %} {% endblock %}
+
 </body>
 
 {% block script %} {% endblock %}

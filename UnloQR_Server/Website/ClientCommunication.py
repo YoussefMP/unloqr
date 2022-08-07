@@ -1,6 +1,6 @@
 from werkzeug.security import check_password_hash
 from .client_msg_gen import send_confirmation_email
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from .models import User, Log
 from . import messages as msg
 
@@ -23,14 +23,14 @@ def login_request():
     else:
         response = msg.USER_DOESNT_EXIST
 
-    return response
+    return jsonify(response)
 
 
 @client_comms.route("/frgtpswrd", methods=["GET", "POST"])
 def forgot_pw_req(user):
     send_confirmation_email(user.email, "auth.reroute_to_confirmation")
     response = msg.PW_RESET_REQUEST_ACCEPTED
-    return response
+    return jsonify(response)
 
 
 @client_comms.route("/access_request", methods=["POST"])
@@ -54,4 +54,4 @@ def access_req():
     else:
         response = msg.USER_DOESNT_EXIST
 
-    return response
+    return jsonify(response)

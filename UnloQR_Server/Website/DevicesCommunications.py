@@ -48,6 +48,6 @@ def message_handler(data):
     else:
         print(f"Welcome back {data['id']}")
         # TODO: update session Id for device
-        return None
+        return "XXXX"
 
 

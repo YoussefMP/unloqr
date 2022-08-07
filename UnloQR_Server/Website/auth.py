@@ -1,11 +1,14 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .client_msg_gen import send_confirmation_email, get_token_seed
 from validate_email_address import validate_email
 from itsdangerous import SignatureExpired
 from .models import User, Log, Device
+from threading import Thread
+from time import sleep
 from . import db_man
+import cv2 as cv2
 
 auth = Blueprint("auth", __name__)
 
@@ -158,4 +161,28 @@ def add_user_view():
         else:
             flash("Invalid email", category="error")
 
-    return render_template("AddUser.html", user=current_user)
+    return render_template("VideoViewer.html", user=current_user)
+
+
+# _________________ Video Handling _________________
+def generate_frames(uid):
+    cap = cv2.VideoCapture("./Website/static/AMV.mp4")
+
+    while cap.isOpened():
+        success, frame = cap.read()
+        if success:
+            ret, frame = cv2.imencode(".jpg", frame)
+            frame = frame.tobytes()
+
+            yield b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
+            sleep(0.01)
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+@auth.route("/Vid_log/<uid>", methods=["GET"])
+def open_vid_modal(uid):
+    return Response(generate_frames(uid), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+

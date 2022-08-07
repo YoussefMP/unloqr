@@ -20,8 +20,7 @@ def home():
             new_user = User(email=email)
             db_man.add_user(new_user, device)
 
-            log_entry = Log(video="Hello",
-                            activity=f"Added to Device ({dev_name})",
+            log_entry = Log(activity=f"Added to Device ({dev_name})",
                             user_id=User.query.filter_by(email=email).first().id
                             )
             db_man.add_log(log_entry)

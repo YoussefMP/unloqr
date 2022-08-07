@@ -20,7 +20,7 @@ class DBManager:
     ########################
     def add_user(self, new_user, device):
         self.data_base.session.add(new_user)
-        new_user.allowed_devices.append(device)
+        device.allowed_users.append(new_user)
         self.data_base.session.commit()
 
     def set_name(self, user, name):

@@ -35,13 +35,23 @@ def create_app():
     with app.app_context():
         db_man.create_database(app)
 
-    # TODO: Delete when insertion of devices is complete
+    # TODO: Delete when insertion of devices
     with app.app_context():
-        if not User.query.filter_by(email="admin@admin").first():
+        user = User.query.filter_by(email="admin@admin").first()
+        if not user:
             dev = Device(dev_name="Q101")
             db_man.add_device(dev)
             user = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
             db_man.add_user(user, device=dev)
+
+            vid_file = open("./Website/static/AMV.mp4", "rb")
+            log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
+                            user_id=User.query.filter_by(email=user.email).first().id,
+                            video=vid_file.read()
+                            )
+            db_man.add_log(log_entry)
+
+            print(f"user logs = {user.logs}")
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
