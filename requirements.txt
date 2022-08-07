@@ -19,4 +19,7 @@ validate-email==1.3
 opencv-python-headless~=4.6.0.66
 ffmpeg
 libsm6
-libxext6
+libxrender1
+libfontconfig1
+libice6
+
