@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block title %} Device {% endblock %}
+{% block content%}
+
+
+
+<h1 align="center">Devices</h1>
+<body>
+
+  <table class="table mt-3" content="width=device-width,  initial-scale=1">
+    <thread>
+      <tr>
+        {% for header in db.query.statement.columns.keys()%}
+        {% if header != "online" %}
+          <th class="col text-left col-md-auto"> {{ header }} </th>
+        {% endif %}
+        {% endfor %}
+        <th class="col text-left col-md-auto"> Logs </th>
+      </tr>
+    </thread>
+    <tbody>
+        {% for device in db.query.all() %}
+        <tr>
+          <th class="text-left">{{ device.id }}</th>
+          <td class="text-left">{{ device.dev_name }}</td>
+          <td class="text-left">{{ device.allowed_users }}</td>
+          {% if user.email_confirmed %}
+            <td class="text-left"> Yes </td>
+          {% else %}
+            <td class="text-left"> No </td>
+          {% endif %}
+          <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+  </table>
+</body>
+
+{% block script %} {% endblock %}
+{% endblock %}

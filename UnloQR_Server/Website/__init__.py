@@ -43,8 +43,10 @@ def create_app():
         user = User.query.filter_by(email="admin@admin").first()
         print(f"Found {user}")
         if not user:
-            dev = Device(dev_name="Q101")
-            db_man.add_device(dev)
+            dev = Device.query.filter_by(dev_name="Q101").first()
+            if not dev:
+                dev = Device(dev_name="Q101")
+                db_man.add_device(dev)
             user = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
             db_man.add_user(user, device=dev)
 

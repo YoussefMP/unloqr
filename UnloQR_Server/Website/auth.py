@@ -123,6 +123,12 @@ def logs_view(uid):
     return render_template("Logs.html", user=user)
 
 
+@auth.route("/devices")
+@login_required
+def devices_view():
+    return render_template("Devices.html", user=current_user, db=Device)
+
+
 # background process happening without any refreshing
 @auth.route("/del_user/<uid>")
 @login_required
