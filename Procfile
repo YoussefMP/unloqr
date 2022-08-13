@@ -1,1 +1,1 @@
-web: gunicorn --bind 0.0.0.0:$PORT UnloQR_Server.app:app
+web: gunicorn --bind 0.0.0.0:$PORT UnloQR_Server.app:app --worker-class eventlet
