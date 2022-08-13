@@ -14,23 +14,14 @@ class DBManager:
 
         try:
             print(f" Listing '/' content {os.listdir('/')}")
+
+            for ndir in os.listdir("/"):
+                print(f"{ndir} ==> {os.listdir(f'/{ndir}')}")
+                for subdir in os.listdir(f"/{ndir}"):
+                    print(f"{subdir} ===> os.listdir(f'/{ndir}/{subdir}')")
         except:
             pass
 
-        try:
-            print(f"Listing 'Website' content {os.listdir('Website')}")
-        except:
-            pass
-
-        try:
-            print(f"Does database exist ? => {path.exists('.Website/' + self.name)}")
-        except:
-            pass
-
-        try:
-            print(f"Does database exist ? => {path.exists('.Website/' + self.name)}")
-        except:
-            print()
 
         if not path.exists('.Website/' + self.name):
             self.data_base.drop_all()
