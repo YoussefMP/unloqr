@@ -9,7 +9,8 @@ class DBManager:
         self.name = name
 
     def create_database(self, app):
-        if not path.exists('Website/' + self.name):
+        print(f"Does database exist ? => {path.exists('.Website/' + self.name)}")
+        if not path.exists('.Website/' + self.name):
             self.data_base.drop_all()
             self.data_base.create_all(app=app)
             print("Created Database!")
