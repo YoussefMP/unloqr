@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b27097e6-3fbb-4147-b769-9a500a61fdb7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/UnloQR_Server/Website/db_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/UnloQR_Server/Website/db_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UnloQR_Server/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/UnloQR_Server/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

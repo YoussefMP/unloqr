@@ -13,12 +13,12 @@ class DBManager:
     def create_database(self, app):
 
         try:
-            print(f" Listing '/' content {os.listdir('/')}")
+            print(f" + Listing '/' content {os.listdir('/')}")
 
             for ndir in os.listdir("/"):
-                print(f"{ndir} ==> {os.listdir(f'/{ndir}')}")
+                print(f" - {ndir} ==> {os.listdir(f'/{ndir}')}")
                 for subdir in os.listdir(f"/{ndir}"):
-                    print(f"{subdir} ===> os.listdir(f'/{ndir}/{subdir}')")
+                    print(f" ----- {subdir} ===> {os.listdir(f'/{ndir}/{subdir}')}")
         except:
             pass
 
