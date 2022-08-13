@@ -8,4 +8,4 @@ app, socketio = create_app()
 
 if __name__ == "__main__":
     print("_______RUNNNING APP_________")
-    socketio.run(app, debug=True, use_reloader=False)
+    socketio.run(app, debug=False, use_reloader=False)

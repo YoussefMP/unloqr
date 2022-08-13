@@ -1,4 +1,5 @@
 import os
+import sqlite3
 
 from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -11,36 +12,27 @@ class DBManager:
         self.name = name
 
     def create_database(self, app):
+        local_path = "./"
+        heroku_path = "./UnloQR_Server/Website/"
 
-        try:
-            print(f" + Listing './' content {os.listdir('./')}")
+        print(f"Local path search returned {path.exists(local_path + self.name)}")
+        print(f"Deployment's path search returned {path.exists(heroku_path + self.name)}")
 
-            for ndir in os.listdir("./"):
-                try:
-                    print(f" - {ndir} ==> {os.listdir(f'./{ndir}')}")
-                    try:
-                        for subdir in os.listdir(f"./{ndir}"):
-                            print(f" ----- {subdir} ===> {os.listdir(f'./{ndir}/{subdir}')}")
-                    except:
-                        print(f"------------------------- {subdir} -------------------------")
-                except:
-                    print(f"- ------------------------- {ndir} -------------------------")
-        except:
-            pass
-
-        if not path.exists('.Website/' + self.name):
+        if not (path.exists(local_path + self.name) or path.exists(heroku_path + self.name)):
             self.data_base.drop_all()
             self.data_base.create_all(app=app)
             print("Created Database!")
-            # TODO add admin account
 
     ########################
     # User table functions #
     ########################
     def add_user(self, new_user, device):
-        self.data_base.session.add(new_user)
-        device.allowed_users.append(new_user)
-        self.data_base.session.commit()
+        try:
+            self.data_base.session.add(new_user)
+            device.allowed_users.append(new_user)
+            self.data_base.session.commit()
+        except sqlite3.IntegrityError as err:
+            print(f"Error Message: {err}")
 
     def set_name(self, user, name):
         user.name = name
@@ -55,16 +47,22 @@ class DBManager:
         self.data_base.session.commit()
 
     def delete_user_by_id(self, user):
-        self.data_base.session.delete(user.first())
-        self.data_base.session.commit()
+        try:
+            self.data_base.session.delete(user.first())
+            self.data_base.session.commit()
+        except sqlite3.DataError as d_err:
+            print(f"Data error while deleting: {d_err}")
     #####################################################
 
     #######################
     # Log table functions #
     #######################
     def add_log(self, log_entry):
-        self.data_base.session.add(log_entry)
-        self.data_base.session.commit()
+        try:
+            self.data_base.session.add(log_entry)
+            self.data_base.session.commit()
+        except sqlite3.IntegrityError as i_err:
+            print(f"Integrity error: {i_err}")
 
     def update_video_path(self, entry, vid_path):
         entry.video = vid_path
@@ -75,7 +73,10 @@ class DBManager:
     # Device table functions #
     ##########################
     def add_device(self, device):
-        self.data_base.session.add(device)
-        self.data_base.session.commit()
+        try:
+            self.data_base.session.add(device)
+            self.data_base.session.commit()
+        except sqlite3.IntegrityError as i_err:
+            print(f"Integrity error: {i_err}")
     #####################################################
 
