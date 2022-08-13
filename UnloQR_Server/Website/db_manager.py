@@ -1,3 +1,5 @@
+import os
+
 from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from os import path
@@ -9,7 +11,27 @@ class DBManager:
         self.name = name
 
     def create_database(self, app):
-        print(f"Does database exist ? => {path.exists('.Website/' + self.name)}")
+
+        try:
+            print(f" Listing '/' content {os.listdir('/')}")
+        except:
+            pass
+
+        try:
+            print(f"Listing 'Website' content {os.listdir('Website')}")
+        except:
+            pass
+
+        try:
+            print(f"Does database exist ? => {path.exists('.Website/' + self.name)}")
+        except:
+            pass
+
+        try:
+            print(f"Does database exist ? => {path.exists('.Website/' + self.name)}")
+        except:
+            print()
+
         if not path.exists('.Website/' + self.name):
             self.data_base.drop_all()
             self.data_base.create_all(app=app)
