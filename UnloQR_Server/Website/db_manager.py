@@ -13,15 +13,21 @@ class DBManager:
     def create_database(self, app):
 
         try:
-            print(f" + Listing '/' content {os.listdir('/')}")
+            print(f" + Listing './' content {os.listdir('./')}")
 
-            for ndir in os.listdir("/"):
-                print(f" - {ndir} ==> {os.listdir(f'/{ndir}')}")
-                for subdir in os.listdir(f"/{ndir}"):
-                    print(f" ----- {subdir} ===> {os.listdir(f'/{ndir}/{subdir}')}")
+            for ndir in os.listdir("./"):
+                try:
+                    print(f" - {ndir} ==> {os.listdir(f'./{ndir}')}")
+                    try:
+                        for subdir in os.listdir(f"./{ndir}"):
+                            print(f" ----- {subdir} ===> {os.listdir(f'./{ndir}/{subdir}')}")
+                    except:
+                        print(f"- error while listing content of {subdir}")
+                except:
+                    print(f"- error while listing content of {ndir}")
+
         except:
             pass
-
 
         if not path.exists('.Website/' + self.name):
             self.data_base.drop_all()

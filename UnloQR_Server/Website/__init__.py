@@ -18,6 +18,7 @@ def create_app():
     app.config['SECRET_KEY'] = "One Secret key to generate here"
     app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{db_man.name}'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config["UPLOAD_FOLDER"] = "static/uploads"
     serv_socketio = SocketIO(app, max_http_buffer_size=(50 * 1000 * 1000))
     set_socketio(serv_socketio)
