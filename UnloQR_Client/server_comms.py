@@ -10,10 +10,11 @@ class Client:
 
     def __init__(self):
         self.c_man = ConfigManager("./_Config")
-        self.server_url = "http://127.0.0.1:5000"
+        self.server_url = "https://unloqr.herokuapp.com/"
+        # self.server_url = "http://127.0.0.1:5000"
 
         print("Connecting to server...")
-        client.connect(self.server_url)
+        client.connect(self.server_url, wait_timeout=10)
 
     @client.event
     def request_id(self):
@@ -29,6 +30,7 @@ class Client:
             This function calls the FileIO to set up the config file on receiving new_id.
             :param idx: New ID received from the server or None
             """
+            print(f" CALL BACK FROM THE SERVER ==> {idx}")
             if idx != "XXXX":
                 self.c_man.initialize_config_file(idx)
 
