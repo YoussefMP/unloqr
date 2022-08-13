@@ -10,10 +10,10 @@ class Client:
 
     def __init__(self):
         self.c_man = ConfigManager("./_Config")
-        self.server_url = "http://127.0.0.1:5000"
+        self.server_url = "https://unloqr.herokuapp.com"
 
         print("Connecting to server...")
-        client.connect(self.server_url)
+        client.connect(self.server_url, wait_timeout=10)
 
     @client.event
     def request_id(self):
@@ -41,7 +41,7 @@ class Client:
         :return:
         """
         name = "amv.mp4"
-        file = open("./static/AMV.mp4", "rb")
+        file = open("./static/AOT.mp4", "rb")
         video = base64.b64encode(file.read())
 
         data = {"file": video, "filename": name}
@@ -56,4 +56,6 @@ def open_com_chanel(cl):
     print("Sending upload request")
     cl.upload_file()
     print("req sent...")
+    client.disconnect()
+
 

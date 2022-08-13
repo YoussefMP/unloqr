@@ -47,8 +47,8 @@ class DBManager:
         self.data_base.session.add(log_entry)
         self.data_base.session.commit()
 
-    def update_video_path(self, entry, path):
-        entry.video = path
+    def update_video_path(self, entry, vid_path):
+        entry.video = vid_path
         self.data_base.session.commit()
     #####################################################
 

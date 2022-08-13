@@ -1,9 +1,0 @@
-<changelist name="Uncommitted_changes_before_Checkout_at_8_4_2022_3_26_PM_[Changes]" date="1659619602020" recycled="true" deleted="true">
-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_8_4_2022_3_26_PM_[Changes]/shelved.patch" />
-  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 8/4/2022 3:26 PM [Changes]" />
-  <binary>
-    <option name="BEFORE_PATH" value="UnloQR_Server/Website/database.db" />
-    <option name="AFTER_PATH" value="UnloQR_Server/Website/database.db" />
-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_8_4_2022_3_26_PM_[Changes]/database.db" />
-  </binary>
-</changelist>

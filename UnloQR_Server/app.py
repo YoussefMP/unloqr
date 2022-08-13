@@ -1,4 +1,4 @@
-from .Website import create_app
+from Website import create_app
 
 app, socketio = create_app()
 
