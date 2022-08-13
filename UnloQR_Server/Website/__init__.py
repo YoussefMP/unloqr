@@ -42,7 +42,7 @@ def create_app():
     # TODO: Delete when insertion of devices
     with app.app_context():
         user = User.query.filter_by(email="admin@admin").first()
-        print(f"Found {user}")
+
         if not user:
             dev = Device.query.filter_by(dev_name="Q101").first()
             if not dev:

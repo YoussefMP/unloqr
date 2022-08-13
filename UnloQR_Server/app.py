@@ -1,8 +1,8 @@
-from .Website import create_app
+from Website import create_app
 
 print("_______ CALLING CREATE_APP ____________")
 app, socketio = create_app()
 
 if __name__ == "__main__":
     print("_______RUNNNING APP_________")
-    socketio.run(app, debug=False)
+    socketio.run(app, debug=True, use_reloader=False)

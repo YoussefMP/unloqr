@@ -22,10 +22,9 @@ class DBManager:
                         for subdir in os.listdir(f"./{ndir}"):
                             print(f" ----- {subdir} ===> {os.listdir(f'./{ndir}/{subdir}')}")
                     except:
-                        print(f"- error while listing content of {subdir}")
+                        print(f"------------------------- {subdir} -------------------------")
                 except:
-                    print(f"- error while listing content of {ndir}")
-
+                    print(f"- ------------------------- {ndir} -------------------------")
         except:
             pass
 
