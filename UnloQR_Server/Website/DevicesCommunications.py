@@ -1,10 +1,11 @@
-import base64
-from pathlib import Path
 from flask import Blueprint, request
 from .models import Device, User, Log
 from . import db_man, socketio, app
-import random
+from .dev_msg_gen import *
+from pathlib import Path
 import os.path
+import random
+import base64
 
 dev_comms = Blueprint("dev_com", __name__)
 
@@ -31,11 +32,12 @@ def handle_connect():
 
 
 @socketio.on('get_ID')
-def message_handler(data):
+def handle_id_request(data):
     """
     Handles new incoming devices messages into the server
     :param data: Data sent with the message
     """
+
     print("Wait a sec, I am ", end="")
     if data["id"] == "XXXX":
         print("Welcoming new comer... ")
@@ -43,15 +45,20 @@ def message_handler(data):
         new_id = generate_dev_name(devices_list)
 
         # TODO: Uncomment when testing with Raspberry pi
-        # new_dev = Device(dev_id=new_dev_name)
-        # db_man.add_device(new_dev)
+        new_dev = Device(dev_name=new_id)
+        db_man.set_session_id(new_dev, request.sid)
+        db_man.add_device(new_dev)
 
-        return new_id
+        response = compose_new_id_msg(new_id)
+        socketio.emit("set_ID", response, room=request.sid)
 
     else:
         print(f"Welcome back {data['id']}")
-        # TODO: update session Id for device
-        return "XXXX"
+        device = Device.query.filter_by(dev_name=data['id']).first()
+        db_man.set_session_id(device, request.sid)
+
+        response = compose_hello_msg()
+        socketio.emit("hello", response, room=request.sid)
 
 
 @socketio.on("file_upload")

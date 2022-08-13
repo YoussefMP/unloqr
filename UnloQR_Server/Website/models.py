@@ -31,5 +31,6 @@ class Device(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dev_name = db.Column(db.String(20), unique=True)
     online = db.Column(db.Boolean, default=False)
+    sid = db.Column(db.String(150))
     allowed_users = db.relationship("User", secondary=user_device, backref="allowed_devices", lazy="dynamic")
 

@@ -22,12 +22,7 @@
         <tr>
           <th class="text-left">{{ device.id }}</th>
           <td class="text-left">{{ device.dev_name }}</td>
-          <td class="text-left">{{ device.allowed_users }}</td>
-          {% if user.email_confirmed %}
-            <td class="text-left"> Yes </td>
-          {% else %}
-            <td class="text-left"> No </td>
-          {% endif %}
+          <td class="text-left">{{ device.sid }}</td>
           <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
         </tr>
         {% endfor %}

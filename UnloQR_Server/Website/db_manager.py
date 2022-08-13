@@ -11,16 +11,17 @@ class DBManager:
         self.data_base = SQLAlchemy()
         self.name = name
 
-    def create_database(self, app):
+    def create_database(self, app, force=False):
         local_path = "./"
         heroku_path = "./UnloQR_Server/Website/"
 
         print(f"Local path search returned {path.exists(local_path + self.name)}")
         print(f"Deployment's path search returned {path.exists(heroku_path + self.name)}")
 
-        if not (path.exists(local_path + self.name) or path.exists(heroku_path + self.name)):
+        if (not (path.exists(local_path + self.name) or path.exists(heroku_path + self.name))) or force:
             self.data_base.drop_all()
             self.data_base.create_all(app=app)
+
             print("Created Database!")
 
     ########################
@@ -78,5 +79,11 @@ class DBManager:
             self.data_base.session.commit()
         except sqlite3.IntegrityError as i_err:
             print(f"Integrity error: {i_err}")
+
+    def set_session_id(self, device, sid):
+        print(sid)
+        device.sid = sid
+        self.data_base.session.commit()
+        print("Should be Set")
     #####################################################
 

@@ -53,3 +53,5 @@ def send_confirmation_email(email, route):
 
     except Exception as exception:
         print("Error: %s!\n\n" % exception)
+
+

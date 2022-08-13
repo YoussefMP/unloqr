@@ -37,7 +37,7 @@ def create_app():
 
     from .models import User, Log, Device
     with app.app_context():
-        db_man.create_database(app)
+        db_man.create_database(app, force=False)
 
     # TODO: Delete when insertion of devices
     with app.app_context():
