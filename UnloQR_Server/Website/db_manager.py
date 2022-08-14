@@ -12,13 +12,13 @@ class DBManager:
         self.name = name
 
     def create_database(self, app, force=False):
-        local_path = "./"
+        local_path = "./Website"
         heroku_path = "./UnloQR_Server/Website/"
 
-        print(f"Local path search returned {path.exists(local_path + self.name)}")
+        print(f"Local path search returned {path.exists(f'{local_path}/{self.name}')}")
         print(f"Deployment's path search returned {path.exists(heroku_path + self.name)}")
 
-        if (not (path.exists(local_path + self.name) or path.exists(heroku_path + self.name))) or force:
+        if (not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name))) or force:
             self.data_base.drop_all()
             self.data_base.create_all(app=app)
 

@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %} Home {% endblock %}
+{% extends "base.html" %} {% block title %} Users {% endblock %}
 {% block content%}
 
 
@@ -55,17 +55,19 @@
     </thread>
     <tbody>
         {% for user in db.query.all() %}
-        <tr>
-          <th class="text-left">{{ user.id }}</th>
-          <td class="text-left">{{ user.email }}</td>
-          <td class="text-left">{{ user.name }}</td>
-          {% if user.email_confirmed %}
-            <td class="text-left"> Yes </td>
-          {% else %}
-            <td class="text-left"> No </td>
-          {% endif %}
-          <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
-        </tr>
+        {% if user.id != 1 %}
+          <tr>
+            <th class="text-left">{{ user.id }}</th>
+            <td class="text-left">{{ user.email }}</td>
+            <td class="text-left">{{ user.name }}</td>
+            {% if user.email_confirmed %}
+              <td class="text-left"> Yes </td>
+            {% else %}
+              <td class="text-left"> No </td>
+            {% endif %}
+            <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
+          </tr>
+        {% endif %}
         {% endfor %}
 
     </tbody>

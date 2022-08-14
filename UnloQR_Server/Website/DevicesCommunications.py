@@ -37,14 +37,11 @@ def handle_id_request(data):
     Handles new incoming devices messages into the server
     :param data: Data sent with the message
     """
-
-    print("Wait a sec, I am ", end="")
     if data["id"] == "XXXX":
         print("Welcoming new comer... ")
         devices_list = db_man.data_base.session.query(Device.dev_name).all()
         new_id = generate_dev_name(devices_list)
 
-        # TODO: Uncomment when testing with Raspberry pi
         new_dev = Device(dev_name=new_id)
         db_man.set_session_id(new_dev, request.sid)
         db_man.add_device(new_dev)
@@ -53,7 +50,6 @@ def handle_id_request(data):
         socketio.emit("set_ID", response, room=request.sid)
 
     else:
-        print(f"Welcome back {data['id']}")
         device = Device.query.filter_by(dev_name=data['id']).first()
         db_man.set_session_id(device, request.sid)
 
@@ -85,5 +81,16 @@ def handle_file_upload(data):
         db_man.add_log(log_entry)
 
     print("File Got")
+
+
+# TODO: Handle Manual lock open
+def handle_manual_access_request():
+    pass
+
+
+# TODO: handle disconnect
+def handle_disconnect():
+    pass
+
 
 

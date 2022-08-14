@@ -39,7 +39,7 @@ def create_app():
     with app.app_context():
         db_man.create_database(app, force=False)
 
-    # TODO: Delete when insertion of devices
+    # TODO: Delete when insertion of devices is done
     with app.app_context():
         user = User.query.filter_by(email="admin@admin").first()
 
@@ -58,8 +58,6 @@ def create_app():
                 db_man.add_log(log_entry)
             except Exception as e:
                 print(e)
-
-            print(f"user logs = {user.logs}")
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"

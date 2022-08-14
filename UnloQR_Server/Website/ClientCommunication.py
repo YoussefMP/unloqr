@@ -1,8 +1,11 @@
 from werkzeug.security import check_password_hash
 from .client_msg_gen import send_confirmation_email
 from flask import Blueprint, request, jsonify
-from .models import User, Log
+from .models import User, Log, Device
 from . import messages as msg
+from . import socketio
+from .client_msg_gen import compile_grant_access_msg
+
 
 client_comms = Blueprint("client_comms", __name__)
 
@@ -33,19 +36,37 @@ def forgot_pw_req(user):
     return jsonify(response)
 
 
+# TODO: Handle access request
 @client_comms.route("/access_request", methods=["POST"])
 def access_req():
-    data = request.get_json()
+    print(request)
+    try:
+        data = request.get_json()
+        email = data["email"]
+        password = data["password"]
+        dev_name = data["dev_name"]
+    except:
+        email = "Zshooterboy@gmail.com"
+        password = "1234567"
+        dev_name = "Z658"
 
-    email = data["email"]
-    password = data["password"]
-    dev_name = data["dev_name"]
-
-    user = User.query.filer_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
     if user:
         if check_password_hash(user.password, password):
-            if dev_name in user.allowed_devices:
-                # TODO: Start thread for unlocking and recording
+
+            # TODO: Check if user is allowed on device
+            device = Device.query.filter_by(dev_name=dev_name).first()
+
+
+            if user.allowed_devices[0].dev_name == device.dev_name:
+                sid = device.sid
+                if sid:
+                    response = compile_grant_access_msg(user.id, dev_name)
+                    socketio.emit("access_granted", response, room=sid)
+                else:
+                    # TODO: Device is offline
+                    pass
+
                 response = msg.LOGIN_GRANTED
             else:
                 response = msg.DENIED_ON_DEVICE
@@ -55,3 +76,11 @@ def access_req():
         response = msg.USER_DOESNT_EXIST
 
     return jsonify(response)
+
+
+# TODO: Switch communication to socket io as opposed to POST requests (Optional)
+
+# TODO: handle admin requests
+
+
+
