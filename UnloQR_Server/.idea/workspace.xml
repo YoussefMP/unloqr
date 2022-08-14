@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3aaea0ff-aeea-40a5-ae2b-5c22cd501398" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Website/dev_msg_gen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/DevicesCommunications.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/DevicesCommunications.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/client_msg_gen.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/client_msg_gen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/database.db" beforeDir="false" afterPath="$PROJECT_DIR$/Website/database.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/db_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/db_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Website/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Website/templates/Devices.html" beforeDir="false" afterPath="$PROJECT_DIR$/Website/templates/Devices.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,13 +32,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "last_opened_file_path": "C:/Users/Josepi/Desktop/AltaZ/UnloQR_Client/unloqr",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Josepi/Desktop/AltaZ/UnloQR_Client/unloqr&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Josepi\PycharmProjects\UnloQR_Server" />
