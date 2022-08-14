@@ -1,5 +1,7 @@
+from UnloQR_Client.Client_FileIO import ConfigManager
 from server_comms import Client, open_com_chanel
 from GUI import GUIManager
+
 from threading import Thread
 from os import path
 import time

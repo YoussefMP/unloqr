@@ -1,7 +1,7 @@
-from Client_FileIO import ConfigManager
+from ServerMsgHandler import response_ids
 import socketio
 import base64
-
+from UnloQR_Client.Client_FileIO import ConfigManager
 
 client = socketio.Client()
 
@@ -25,16 +25,8 @@ class Client:
         my_id = self.c_man.get_my_id()
         data = {"id": my_id}
 
-        def set_id_in_config(idx):
-            """
-            This function calls the FileIO to set up the config file on receiving new_id.
-            :param idx: New ID received from the server or None
-            """
-            print(f" CALL BACK FROM THE SERVER ==> {idx}")
-            if idx != "XXXX":
-                self.c_man.initialize_config_file(idx)
-
-        client.emit("get_ID", data, callback=set_id_in_config)
+        # client.emit("get_ID", data, callback=set_id_in_config)
+        client.emit("get_ID", data)
 
     @client.event
     def upload_file(self):
@@ -52,10 +44,21 @@ class Client:
         client.emit("file_upload", data)
 
 
+@client.on("*")
+def get_id(event, data):
+    """
+    This function calls the FileIO to set up the config file on receiving new_id.
+    :param
+    event:
+    data: response received from the server
+    """
+    response_ids[event](data)
+
+
 def open_com_chanel(cl):
     cl.request_id()
 
     print("Sending upload request")
-    cl.upload_file()
-    print("req sent...")
+    # cl.upload_file()
+    # print("req sent...")
 

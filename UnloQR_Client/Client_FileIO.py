@@ -30,7 +30,9 @@ class ConfigManager:
 
     def get_my_id(self):
         try:
+            self.config.read(self.c_path)
             my_id = self.config.get("Credentials", "id")
             return my_id
-        except configparser.NoSectionError:
+        except configparser.NoSectionError as err:
+            print(err)
             return "XXXX"
