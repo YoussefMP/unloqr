@@ -1,7 +1,9 @@
-from ServerMsgHandler import response_ids
+import threading
+from ServerMsgHandler import response_ids, set_c_man, set_client
+from Client_FileIO import ConfigManager
 import socketio
 import base64
-from UnloQR_Client.Client_FileIO import ConfigManager
+
 
 client = socketio.Client()
 
@@ -10,8 +12,11 @@ class Client:
 
     def __init__(self):
         self.c_man = ConfigManager("./_Config")
-        self.server_url = "https://unloqr.herokuapp.com/"
-        # self.server_url = "http://127.0.0.1:5000"
+        # self.server_url = "https://unloqr.herokuapp.com/"
+        self.server_url = "http://127.0.0.1:5000"
+
+        set_c_man(self.c_man)
+        set_client(self)
 
         print("Connecting to server...")
         client.connect(self.server_url, wait_timeout=10)
@@ -29,13 +34,13 @@ class Client:
         client.emit("get_ID", data)
 
     @client.event
-    def upload_file(self):
+    def upload_file(self, file_path):
         """
         Upload video file to the server
         :return:
         """
-        name = "amv.mp4"
-        file = open("./static/AMV.mp4", "rb")
+        name = file_path[file_path.rfind("/")+1:]
+        file = open(file_path, "rb")
         video = base64.b64encode(file.read())
 
         data = {"file": video, "filename": name}
@@ -52,13 +57,11 @@ def get_id(event, data):
     event:
     data: response received from the server
     """
-    response_ids[event](data)
+    print("Received EVENT")
+    receiver_thread = threading.Thread(target=response_ids[event](data))
+    receiver_thread.start()
 
 
 def open_com_chanel(cl):
     cl.request_id()
-
-    print("Sending upload request")
-    # cl.upload_file()
-    # print("req sent...")
 

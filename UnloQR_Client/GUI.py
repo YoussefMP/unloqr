@@ -10,7 +10,7 @@ def is_connected(host='http://google.com'):
     try:
         urllib.request.urlopen(host)
         return True
-    except:
+    except urllib.error.HTTPError as err:
         return False
 
 
@@ -48,10 +48,12 @@ class GUIManager:
 
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
         # self.window.attributes("-fullscreen", True)
+
+        self.window.geometry("600x400")
         self.window.mainloop()
 
     def update_status(self):
-        connection_status_update = self.window.after(200, self.update_status)
+        connection_status_update = self.window.after(2000, self.update_status)
         if is_connected():
             self.icon = Image.open("./static/WiFiIcon.png")
         else:
