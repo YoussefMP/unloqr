@@ -17,9 +17,11 @@ def login_request():
     email = data["email"]
     password = data["password"]
 
-    user = User.query.filer_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
     if user:
+        uid = user.id
         if check_password_hash(user.password, password):
+            msg.LOGIN_GRANTED.update({"UID": uid})
             response = msg.LOGIN_GRANTED
         else:
             response = msg.LOGIN_DENIED
@@ -39,7 +41,6 @@ def forgot_pw_req(user):
 # TODO: Handle access request
 @client_comms.route("/access_request", methods=["POST"])
 def access_req():
-    print(request)
     try:
         data = request.get_json()
         email = data["email"]
@@ -77,6 +78,18 @@ def access_req():
 
     return jsonify(response)
 
+
+@client_comms.route("/test", methods=["GET"])
+def hio():
+    devices = Device.query.all()
+    print(devices)
+    for user in User.query.all():
+        for device in devices:
+            if user in [d for d in device.allowed_users]:
+                print(f"{user.name}is allowed on {device.dev_name}")
+
+
+    return "<h1> Devices </h1>"
 
 # TODO: Switch communication to socket io as opposed to POST requests (Optional)
 

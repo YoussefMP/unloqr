@@ -2,7 +2,7 @@
 OK_MSG = {"ID": 1, "text": "OK"}
 
 # Login handling messages
-LOGIN_GRANTED = {"ID": 100, "text": "Success"}
+LOGIN_GRANTED = {"ID": 100, "text": "Success", "UID": "UID"}
 LOGIN_DENIED = {"ID": 101, "text": "Failed to log in"}
 USER_DOESNT_EXIST = {"ID": 102, "text": "This email is not registered"}
 
