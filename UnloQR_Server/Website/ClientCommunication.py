@@ -1,3 +1,4 @@
+from flask_cors import cross_origin
 from werkzeug.security import check_password_hash
 from .client_msg_gen import send_confirmation_email
 from flask import Blueprint, request, jsonify
@@ -11,6 +12,7 @@ client_comms = Blueprint("client_comms", __name__)
 
 
 @client_comms.route("/lgn_req", methods=["POST"])
+@cross_origin()
 def login_request():
 
     data = request.get_json()
