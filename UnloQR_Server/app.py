@@ -1,3 +1,4 @@
+import os
 try:
     from .Website import create_app
     __local__ = False
@@ -8,8 +9,9 @@ except ImportError:
     from Website import create_app
     __local__ = True
 
-print("_______ CALLING CREATE_APP ____________")
-app, socketio = create_app(__local__)
+if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
+    print("_______ CALLING CREATE_APP ____________")
+    app, socketio = create_app(__local__)
 
 if __name__ == "__main__":
     print("_______RUNNNING APP_________")
