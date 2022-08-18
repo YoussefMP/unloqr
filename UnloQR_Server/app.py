@@ -9,13 +9,15 @@ except ImportError:
     from Website import create_app
     __local__ = True
 
-if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
-    print("_______ CALLING CREATE_APP ____________")
-    app, socketio = create_app(__local__)
 
 if __name__ == "__main__":
-    print("_______RUNNNING APP_________")
-    if __local__:
-        socketio.run(app, debug=True)
-    else:
-        socketio.run(app, debug=False, use_reloader=False)
+
+    if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
+        print("_______ CALLING CREATE_APP ____________")
+        app, socketio = create_app(__local__)
+        
+        print("_______RUNNNING APP_________")
+        if __local__:
+            socketio.run(app, debug=True)
+        else:
+            socketio.run(app, debug=False, use_reloader=False)
