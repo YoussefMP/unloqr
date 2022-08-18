@@ -14,7 +14,7 @@ socketio = None
 app = None
 
 
-def create_app():
+def create_app(__local__):
     global app
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "One Secret key to generate here"
@@ -39,7 +39,7 @@ def create_app():
 
     from .models import User, Log, Device
     with app.app_context():
-        db_man.create_database(app, force=False)
+        db_man.create_database(app, force=not __local__)
 
     # TODO: Delete when insertion of devices is done
     with app.app_context():
