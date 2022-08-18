@@ -39,7 +39,10 @@ def create_app(__local__):
 
     from .models import User, Log, Device
     with app.app_context():
-        db_man.create_database(app, force=not __local__)
+        try:
+            db_man.create_database(app, force=not __local__)
+        except Exception as err:
+            print(f"=========> {err}")
 
     # TODO: Delete when insertion of devices is done
     with app.app_context():
