@@ -85,5 +85,9 @@ class DBManager:
         device.sid = sid
         self.data_base.session.commit()
         print("Should be Set")
+
+    def add_user_to_device(self, device, user):
+        device.allowed_users.append(user)
+        self.data_base.session.commit()
     #####################################################
 

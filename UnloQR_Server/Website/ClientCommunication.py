@@ -5,15 +5,15 @@ from flask import Blueprint, request, jsonify
 from .models import User, Log, Device
 from . import messages as msg
 from . import socketio
-from .client_msg_gen import compile_grant_access_msg
-
 
 client_comms = Blueprint("client_comms", __name__)
 
 
-@client_comms.route("/lgn_req", methods=["POST"])
+@client_comms.route("/login_request", methods=["POST"])
 @cross_origin()
 def login_request():
+
+    # TODO: Logging
 
     data = request.get_json()
     email = data["email"]
@@ -33,25 +33,67 @@ def login_request():
     return jsonify(response)
 
 
-@client_comms.route("/frgtpswrd", methods=["GET", "POST"])
-def forgot_pw_req(user):
-    send_confirmation_email(user.email, "auth.reroute_to_confirmation")
-    response = msg.PW_RESET_REQUEST_ACCEPTED
+@client_comms.route("/forgot_password", methods=["POST"])
+@cross_origin()
+def forgot_pw_req():
+
+    # TODO: Logging
+    response = msg.OK_MSG
+
+    if request.method == "POST":
+        data = request.get_json()
+        email = data["email"]
+
+        user = User.query.filter_by(email=email).first()
+        if user and user.email_confirmed:
+            # TODO: Change the token rerouting link to update password method
+            send_confirmation_email(user.email, "auth.forgot_my_password")
+            response = msg.PW_RESET_REQUEST_ACCEPTED
+        elif not user.email_confirmed:
+            response = msg.EMAIL_NOT_CONFIRMED
+        else:
+            response = msg.PW_RESET_REQUEST_DENIED
+
+    return jsonify(response)
+
+
+@client_comms.route("/change_password", methods=["POST"])
+@cross_origin()
+def change_pw_req():
+
+    # TODO: Logging
+    response = msg.OK_MSG
+
+    if request.method == "POST":
+
+        data = request.get_json()
+        email = data["email"]
+        old_password = data["old_password"]
+        new_password = data["new_password"]
+
+        user = User.query.filter_by(email=email).first()
+        if user and user.email_confirmed:
+            if check_password_hash(user.password, old_password):
+                # TODO: update database
+                response = msg.PW_UPDATE_SUCCESSFUL
+            else:
+                response = msg.PW_OLD_PASSWORD_WRONG
+        elif not user.email_confirmed:
+            response = msg.EMAIL_NOT_CONFIRMED
+
     return jsonify(response)
 
 
 # TODO: Handle access request
 @client_comms.route("/access_request", methods=["POST"])
+@cross_origin()
 def access_req():
-    try:
-        data = request.get_json()
-        email = data["email"]
-        password = data["password"]
-        dev_name = data["dev_name"]
-    except:
-        email = "Zshooterboy@gmail.com"
-        password = "1234567"
-        dev_name = "Z658"
+    # TODO: Loggin
+
+    data = request.get_json()
+    email = data["email"]
+    password = data["password"]
+    dev_name = data["dev_name"]
 
     user = User.query.filter_by(email=email).first()
     if user:
@@ -60,11 +102,16 @@ def access_req():
             # TODO: Check if user is allowed on device
             device = Device.query.filter_by(dev_name=dev_name).first()
 
+            allowed_user = False
+            for dev in user.allowed_devices:
+                if dev_name == dev.dev_name:
+                    allowed_user = True
+                    break
 
-            if user.allowed_devices[0].dev_name == device.dev_name:
+            if allowed_user:
                 sid = device.sid
                 if sid:
-                    response = compile_grant_access_msg(user.id, dev_name)
+                    response = msg.ACCESS_GRANTED
                     socketio.emit("access_granted", response, room=sid)
                 else:
                     # TODO: Device is offline
@@ -93,7 +140,6 @@ def hio():
 
     return "<h1> Devices </h1>"
 
-# TODO: Switch communication to socket io as opposed to POST requests (Optional)
 
 # TODO: handle admin requests
 

@@ -53,15 +53,3 @@ def send_confirmation_email(email, route):
 
     except Exception as exception:
         print("Error: %s!\n\n" % exception)
-
-
-def compile_grant_access_msg(uid, did):
-    date = f"{datetime.now().month}{datetime.now().day}{datetime.now().hour}" \
-           f"{datetime.now().minute}{datetime.now().second}"
-
-    response = {
-        "uid": uid,
-        "did": did,
-        "date": date
-    }
-    return response
