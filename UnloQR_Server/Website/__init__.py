@@ -1,3 +1,5 @@
+import sqlite3
+
 from werkzeug.security import generate_password_hash
 from flask_socketio import SocketIO
 from flask_login import LoginManager
@@ -43,13 +45,19 @@ def create_app():
     with app.app_context():
         user = User.query.filter_by(email="admin@admin").first()
 
+        print(f"Searching for the admin returned {user} ==> if not user = {not user}")
+
         if not user:
             dev = Device.query.filter_by(dev_name="Q101").first()
             if not dev:
                 dev = Device(dev_name="Q101")
                 db_man.add_device(dev)
+
             user = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
-            db_man.add_user(user, device=dev)
+            try:
+                db_man.add_user(user, device=dev)
+            except sqlite3.IntegrityError:
+                print("USER already exists")
 
             try:
                 log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
