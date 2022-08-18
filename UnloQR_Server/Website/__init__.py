@@ -42,7 +42,7 @@ def create_app(__local__):
         try:
             db_man.create_database(app, force=not __local__)
         except Exception as err:
-            print(f"=========> {err}")
+            print(f"=========> {err} ===========")
 
     # TODO: Delete when insertion of devices is done
     with app.app_context():
