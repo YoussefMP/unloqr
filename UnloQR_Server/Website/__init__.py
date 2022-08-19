@@ -26,7 +26,7 @@ def create_app(__local__):
     serv_socketio = SocketIO(app, max_http_buffer_size=(50 * 1000 * 1000))
     set_socketio(serv_socketio)
 
-    db.init_app(app)
+    # db.init_app(app)
 
     from .views import views
     from .auth import auth
