@@ -152,7 +152,7 @@ def send_users_list():
 
 @client_comms.route("/add_user", methods=["POST"])
 @cross_origin()
-def send_users_list():
+def add_user():
     response = msg.OK_MSG
 
     if request.method == "POST":
@@ -188,7 +188,7 @@ def send_users_list():
 
 @client_comms.route("/delete_user", methods=["POST"])
 @cross_origin()
-def send_users_list():
+def delete_user():
     try:
         uid = request.form.get("uid")
         db_man.delete_user_by_id(User.query.filter_by(id=uid))
