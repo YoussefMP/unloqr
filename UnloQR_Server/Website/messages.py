@@ -1,10 +1,10 @@
 
 OK_MSG = {"ID": 0, "text": "OK"}
 
-EMAIL_NOT_CONFIRMED = {"ID": 103, "text": "Please confirm your email before proceeding"}
+EMAIL_NOT_CONFIRMED = {"ID": 105, "text": "Please confirm your email before proceeding"}
 
 # Login handling messages
-LOGIN_GRANTED = {"ID": 100, "text": "Success", "UID": "UID"}
+LOGIN_GRANTED = {"ID": 100, "text": "Success", "UID": "UID", "name": "name"}
 LOGIN_DENIED = {"ID": 101, "text": "Failed to log in"}
 USER_DOESNT_EXIST = {"ID": 103, "text": "This email is not registered"}
 

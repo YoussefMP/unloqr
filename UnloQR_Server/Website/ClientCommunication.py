@@ -128,7 +128,7 @@ def access_req():
     return jsonify(response)
 
 
-@client_comms.route("/test", methods=["GET"])
+@client_comms.route("/get_users_request", methods=["GET"])
 def hio():
     devices = Device.query.all()
     print(devices)
@@ -136,7 +136,6 @@ def hio():
         for device in devices:
             if user in [d for d in device.allowed_users]:
                 print(f"{user.name}is allowed on {device.dev_name}")
-
 
     return "<h1> Devices </h1>"
 

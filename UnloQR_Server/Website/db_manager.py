@@ -18,12 +18,14 @@ class DBManager:
 
         print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
 
-        if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)):
+        if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) and force:
             try:
                 self.data_base.drop_all()
                 self.data_base.create_all(app=app)
             except sqlite3.OperationalError as err:
                 print(f"Catched {err} ===========")
+        else:
+            print("DATABASE ALREADY EXISTENT")
 
             print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
             print("___________ Created Database! ________________")
