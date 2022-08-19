@@ -42,7 +42,11 @@ def create_app(__local__):
         try:
             db_man.create_database(app, force=not __local__)
         except Exception as err:
-            print(f"=========> {err} ===========")
+            print(f"=========> {err} <===========")
+
+    login_manager = LoginManager()
+    login_manager.login_view = "auth.login"
+    login_manager.init_app(app)
 
     # TODO: Delete when insertion of devices is done
     with app.app_context():
@@ -61,7 +65,6 @@ def create_app(__local__):
                 db_man.add_user(user, device=dev)
             except sqlite3.IntegrityError:
                 print("USER already exists")
-
             try:
                 log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
                                 user_id=User.query.filter_by(email=user.email).first().id,
@@ -69,10 +72,6 @@ def create_app(__local__):
                 db_man.add_log(log_entry)
             except Exception as e:
                 print(e)
-
-    login_manager = LoginManager()
-    login_manager.login_view = "auth.login"
-    login_manager.init_app(app)
 
     @login_manager.user_loader
     def load_user(id):

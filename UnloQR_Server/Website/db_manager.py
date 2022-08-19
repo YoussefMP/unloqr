@@ -1,6 +1,7 @@
 import os
 import sqlite3
 
+import sqlalchemy.exc
 from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from os import path
@@ -35,7 +36,7 @@ class DBManager:
             self.data_base.session.add(new_user)
             device.allowed_users.append(new_user)
             self.data_base.session.commit()
-        except sqlite3.IntegrityError as err:
+        except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError as err:
             print(f"Error Message: {err}")
 
     def set_name(self, user, name):
@@ -54,7 +55,7 @@ class DBManager:
         try:
             self.data_base.session.delete(user.first())
             self.data_base.session.commit()
-        except sqlite3.DataError as d_err:
+        except sqlite3.DataError or sqlalchemy.exc.IntegrityError as d_err:
             print(f"Data error while deleting: {d_err}")
     #####################################################
 
@@ -65,7 +66,7 @@ class DBManager:
         try:
             self.data_base.session.add(log_entry)
             self.data_base.session.commit()
-        except sqlite3.IntegrityError as i_err:
+        except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError as i_err:
             print(f"Integrity error: {i_err}")
 
     def update_video_path(self, entry, vid_path):
@@ -80,7 +81,7 @@ class DBManager:
         try:
             self.data_base.session.add(device)
             self.data_base.session.commit()
-        except sqlite3.IntegrityError as i_err:
+        except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError as i_err:
             print(f"Integrity error: {i_err}")
 
     def set_session_id(self, device, sid):

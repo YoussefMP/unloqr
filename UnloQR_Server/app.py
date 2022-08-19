@@ -12,8 +12,6 @@ except ImportError:
 if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
     print("_______ CALLING CREATE_APP ____________")
     app, socketio = create_app(__local__)
-else:
-    print("GOOOOOOOOOOOOOOOOOOD")
 
 if __name__ == "__main__":
 
