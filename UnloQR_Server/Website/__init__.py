@@ -1,5 +1,6 @@
 import sqlite3
 
+import sqlalchemy.exc
 from werkzeug.security import generate_password_hash
 from flask_socketio import SocketIO
 from flask_login import LoginManager
@@ -63,7 +64,7 @@ def create_app(__local__):
             user = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
             try:
                 db_man.add_user(user, device=dev)
-            except sqlite3.IntegrityError:
+            except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError:
                 print("USER already exists")
             try:
                 log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
