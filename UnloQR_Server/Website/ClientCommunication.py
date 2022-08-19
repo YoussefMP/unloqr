@@ -131,9 +131,9 @@ def access_req():
     return jsonify(response)
 
 
-@client_comms.route("/get_users_request", methods=["GET"])
+@client_comms.route("/users_list", methods=["GET"])
 @cross_origin()
-def send_users_list():
+def get_users_list():
     devices = User.query.all()
 
     u_list = []
