@@ -34,3 +34,9 @@ class Device(db.Model):
     sid = db.Column(db.String(150))
     allowed_users = db.relationship("User", secondary=user_device, backref="allowed_devices", lazy="dynamic")
 
+
+class DummyUser:
+    def __init__(self, email, name, id):
+        self.email = email
+        self.name = name
+        self.id = id

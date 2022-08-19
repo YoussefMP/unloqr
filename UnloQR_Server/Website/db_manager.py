@@ -16,7 +16,7 @@ class DBManager:
         local_path = "./Website"
         heroku_path = "./UnloQR_Server/Website/"
 
-        print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+        # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
 
         if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) and force:
             try:
@@ -27,8 +27,8 @@ class DBManager:
         else:
             print("DATABASE ALREADY EXISTENT")
 
-            print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
-            print("___________ Created Database! ________________")
+            # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+            # print("___________ Created Database! ________________")
 
     ########################
     # User table functions #

@@ -1,10 +1,11 @@
 from flask_cors import cross_origin
+from validate_email import validate_email
 from werkzeug.security import check_password_hash
 from .client_msg_gen import send_confirmation_email
 from flask import Blueprint, request, jsonify
-from .models import User, Log, Device
+from .models import User, Log, Device, DummyUser
 from . import messages as msg
-from . import socketio
+from . import socketio, db_man
 
 client_comms = Blueprint("client_comms", __name__)
 
@@ -18,6 +19,8 @@ def login_request():
     data = request.get_json()
     email = data["email"]
     password = data["password"]
+
+    is_valid = validate_email(email)
 
     user = User.query.filter_by(email=email).first()
     if user:
@@ -129,18 +132,70 @@ def access_req():
 
 
 @client_comms.route("/get_users_request", methods=["GET"])
-def hio():
-    devices = Device.query.all()
-    print(devices)
-    for user in User.query.all():
-        for device in devices:
-            if user in [d for d in device.allowed_users]:
-                print(f"{user.name}is allowed on {device.dev_name}")
+@cross_origin()
+def send_users_list():
+    devices = User.query.all()
 
-    return "<h1> Devices </h1>"
+    u_list = []
+
+    for user in devices:
+        dummy_user = {"email": user.email,
+                      "uid": user.id,
+                      "name": user.name,
+                      }
+        u_list.append(dummy_user)
+
+    response = msg.USERS_LIST.update({"users": u_list})
+
+    return jsonify(response)
 
 
-# TODO: handle admin requests
+@client_comms.route("/add_user", methods=["POST"])
+@cross_origin()
+def send_users_list():
+    response = msg.OK_MSG
 
+    if request.method == "POST":
+        email = request.form.get("email")
+        dev_name = request.form.get("dev_name")
+
+        device = Device.query.filter_by(dev_name=dev_name).first()
+        user = User.query.filter_by(email=email).first()
+
+        if not validate_email(email):
+            response = msg.NOT_VALID_EMAIL
+            return jsonify(response)
+
+        if device:
+            if not user:
+                new_user = User(email=email)
+                db_man.add_user(new_user, device)
+                send_confirmation_email(email, "auth.reroute_to_confirmation")
+                response = msg.USER_ADDED
+            else:
+                db_man.add_user_to_device(device, user)
+
+            log_entry = Log(activity=f"Added to Device ({dev_name})",
+                            user_id=User.query.filter_by(email=email).first().id
+                            )
+            db_man.add_log(log_entry)
+            response = msg.USER_ADDED_TO_DEVICE
+        else:
+            response = msg.DEVICE_NOT_FOUND
+
+    return jsonify(response)
+
+
+@client_comms.route("/delete_user", methods=["POST"])
+@cross_origin()
+def send_users_list():
+    try:
+        uid = request.form.get("uid")
+        db_man.delete_user_by_id(User.query.filter_by(id=uid))
+        response = msg.USER_DELETED
+    except Exception as err:
+        response = msg.SOMETHING_WENT_WRONG
+
+    return jsonify(response)
 
 
