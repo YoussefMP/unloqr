@@ -1,7 +1,3 @@
-import sqlite3
-
-import sqlalchemy.exc
-from werkzeug.security import generate_password_hash
 from flask_socketio import SocketIO
 from flask_login import LoginManager
 from .db_manager import DBManager
@@ -48,31 +44,6 @@ def create_app(__local__):
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
-
-    # TODO: Delete when insertion of devices is done
-    # with app.app_context():
-    #     user = User.query.filter_by(email="admin@admin").first()
-    #
-    #     print(f"Searching for the admin returned {user} ==> if not user = {not user}")
-    #
-    #     if not user:
-    #         dev = Device.query.filter_by(dev_name="Q101").first()
-    #         if not dev:
-    #             dev = Device(dev_name="Q101")
-    #             db_man.add_device(dev)
-    #
-    #         user = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
-    #         try:
-    #             db_man.add_user(user, device=dev)
-    #         except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError:
-    #             print("USER already exists")
-    #         try:
-    #             log_entry = Log(activity=f"Added to Device ({dev.dev_name})",
-    #                             user_id=User.query.filter_by(email=user.email).first().id,
-    #                             )
-    #             db_man.add_log(log_entry)
-    #         except Exception as e:
-    #             print(e)
 
     @login_manager.user_loader
     def load_user(id):

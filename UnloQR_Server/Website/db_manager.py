@@ -24,7 +24,7 @@ class DBManager:
                 self.data_base.create_all(app=app)
             except sqlite3.OperationalError as err:
                 print(f"Catched {err} ===========")
-                pass
+
             print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
             print("___________ Created Database! ________________")
 

