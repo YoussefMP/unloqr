@@ -137,10 +137,13 @@ def grant_access(response):
     uid = response["uid"]
     did = response["did"]
     date = response["date"]
-
-    filename = f"{uid}_{did}_{date}.avi"
-    filepath = f"./static/{filename}"
-    record_video(filepath)
+    
+    if uid != -1:
+        filename = f"{uid}_{did}_{date}.avi"
+        filepath = f"./static/{filename}"
+        record_video(filepath)
+    else:
+        sleep(2)
 
     if __raspberry__:
         open_lock()

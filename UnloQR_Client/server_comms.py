@@ -21,7 +21,7 @@ class Client:
         
         print("Connecting to server...")
         tries = 0
-        while(True):
+        while(False):
             if tries ==10:
                 break
             try:
@@ -62,6 +62,12 @@ class Client:
         # data = {"filename": name}
 
         client.emit("file_upload", data)
+    
+    @client.event()
+    def request_man_open(self, password):
+        print(f"testing if the password is passed on {password}")
+        data = {"password": password}
+        client.emit("man_open_request", data)
     
     @staticmethod
     @client.event
