@@ -8,7 +8,7 @@ from flask import Flask
 from datetime import timedelta
 try:
     from .Website import commands
-except ImportError
+except ImportError:
     import commands
 
 __DEBUG__ = False
