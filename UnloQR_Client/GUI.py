@@ -10,14 +10,19 @@ def is_connected(host='http://google.com'):
     try:
         urllib.request.urlopen(host)
         return True
-    except urllib.error.HTTPError as err:
+    except urllib.error.HTTPError or urllib.error.URLError as err:
         return False
 
 
 class GUIManager:
-    def __init__(self, did):
+    def __init__(self, client):
+        
+        self.client = client
+        did = self.client.c_man.get_my_id()
+        
         self.window = Tk()
         main_frame = Frame(self.window)
+        main_frame.configure(bg="white")
 
         if is_connected():
             self.icon = Image.open("./static/WiFiIcon.png")
@@ -26,11 +31,14 @@ class GUIManager:
 
         mid_frame = Frame(main_frame)
         mid_frame.grid(row=2, column=1)
+        mid_frame.configure(bg="white")
         mid_frame.place(in_=main_frame, anchor="center", relx=0.5, rely=0.5)
 
         wifi_icon = ImageTk.PhotoImage(self.icon)
-        wifi_label = Label(main_frame, image=wifi_icon)
-        wifi_label.pack(anchor="e")
+        self.wifi_label = Label(main_frame, image=wifi_icon)
+#        self.wifi_label = Label(main_frame, text="Here")
+        self.wifi_label.configure(bg="white")
+        self.wifi_label.pack(anchor="e")
 
         connection_status_thread = Thread(target=self.update_status())
 
@@ -42,21 +50,31 @@ class GUIManager:
 
         label = Label(mid_frame, image=photo)
         label.pack()
-
         label_text = Label(mid_frame, text=did, font='Times 32')
+        label_text.configure(bg="white")
         label_text.pack()
 
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
         # self.window.attributes("-fullscreen", True)
 
         self.window.geometry("600x400")
+        self.window.protocol("WM_DELETE_WINDOW", self.on_closing())
+        self.window.configure(bg="white")
         self.window.mainloop()
+        self.window.quit()
 
     def update_status(self):
-        connection_status_update = self.window.after(2000, self.update_status)
+        connection_status_update = self.window.after(5000, self.update_status)
         if is_connected():
             self.icon = Image.open("./static/WiFiIcon.png")
+            text = "WIFI_ON"
         else:
+            text = "WIFI_OFF"
             self.icon = Image.open("./static/NoInternetIcon.png")
-
+        
+        wifi_icon = ImageTk.PhotoImage(self.icon)
+        self.wifi_label.config(image=wifi_icon)
         self.window.update_idletasks()
+        
+    def on_closing(self):
+        self.client.disconnect()

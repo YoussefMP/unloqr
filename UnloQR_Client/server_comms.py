@@ -3,6 +3,7 @@ from ServerMsgHandler import response_ids, set_c_man, set_client
 from Client_FileIO import ConfigManager
 import socketio
 import base64
+import time
 
 
 client = socketio.Client()
@@ -12,14 +13,28 @@ class Client:
 
     def __init__(self):
         self.c_man = ConfigManager("./_Config")
-        # self.server_url = "https://unloqr.herokuapp.com/"
-        self.server_url = "http://127.0.0.1:5000"
+        self.server_url = "https://unloqr.herokuapp.com/"
+        # self.server_url = "http://127.0.0.1:5000"
 
         set_c_man(self.c_man)
         set_client(self)
-
+        
         print("Connecting to server...")
-        client.connect(self.server_url, wait_timeout=10)
+        tries = 0
+        while(True):
+            if tries ==10:
+                break
+            try:
+                tries += 1
+                client.connect(self.server_url, wait_timeout=15)
+                break
+            except ConnectionError:
+                print("Caught Connection Error 1")
+                time.sleep(1)
+            except Exception as err:
+                print(f"Sleeping in the finally because of {err}")
+                print("___________________________________________")
+                time.sleep(2)
 
     @client.event
     def request_id(self):
@@ -47,7 +62,11 @@ class Client:
         # data = {"filename": name}
 
         client.emit("file_upload", data)
-
+    
+    @staticmethod
+    @client.event
+    def disconnect():
+        client.emit("disconnect")
 
 @client.on("*")
 def get_id(event, data):
@@ -60,7 +79,7 @@ def get_id(event, data):
     print("Received EVENT")
     receiver_thread = threading.Thread(target=response_ids[event](data))
     receiver_thread.start()
-
+    receiver_thread.join()
 
 def open_com_chanel(cl):
     cl.request_id()

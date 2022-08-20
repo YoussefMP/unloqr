@@ -6,8 +6,10 @@ import cv2
 try:
     import RPi.GPIO as GPIO
     __raspberry__ = True
+    print(f"RPi correctly imported")
 except ModuleNotFoundError:
     __raspberry__ = False
+    print("problem while importing RPi")
 
 
 c_man = None
@@ -83,7 +85,10 @@ def record_video(file_path):
     while True:
         ret, frame = cap.read()
         out.write(frame)
-        cv2.imshow('frame', frame)
+        try:
+            cv2.imshow('frame', frame)
+        except:
+            break
 
         cap_end = datetime.now()
         if (cap_end - cap_start).seconds > 10:
@@ -106,7 +111,7 @@ def open_lock():
     GPIO.setup(13, GPIO.OUT)
 
     GPIO.output(13, 1)
-    time.sleep(7)
+    time.sleep(5)
     GPIO.output(13, 0)
 
 
@@ -147,5 +152,5 @@ def grant_access(response):
 response_ids = {
     "hello": read_msg,
     "set_ID": set_id,
-    "Access granted": grant_access
+    "access_granted": grant_access
 }
