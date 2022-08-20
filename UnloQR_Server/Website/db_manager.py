@@ -1,6 +1,6 @@
 import os
 import sqlite3
-
+import click
 import sqlalchemy.exc
 from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -27,8 +27,13 @@ class DBManager:
         else:
             print("DATABASE ALREADY EXISTENT")
 
-            # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
-            # print("___________ Created Database! ________________")
+    @click.command(name="add_admin")
+    def add_admin(self, admin):
+        try:
+            self.data_base.session.add(admin)
+            self.data_base.session.commit()
+        except sqlite3.IntegrityError as err:
+            print(f"Could not add admin")
 
     ########################
     # User table functions #
@@ -96,4 +101,3 @@ class DBManager:
         device.allowed_users.append(user)
         self.data_base.session.commit()
     #####################################################
-

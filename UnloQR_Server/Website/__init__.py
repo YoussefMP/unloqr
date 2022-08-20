@@ -6,10 +6,7 @@ from flask_login import LoginManager
 from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
-try:
-    from . import commands
-except ImportError:
-    import commands
+
 
 __DEBUG__ = False
 db_man = DBManager("database.db")
@@ -30,7 +27,6 @@ def create_app(__local__):
     set_socketio(serv_socketio)
 
     db.init_app(app)
-    commands.init_app(app)
 
     from .views import views
     from .auth import auth
@@ -46,6 +42,8 @@ def create_app(__local__):
     with app.app_context():
         try:
             db_man.create_database(app, force=False)
+            admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
+            app.cli.add_command(db_man.add_admin(admin))
         except Exception as err:
             print(f"=========> {err} <===========")
 
