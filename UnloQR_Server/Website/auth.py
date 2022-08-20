@@ -18,9 +18,8 @@ def login():
         password = request.form.get("password")
 
         user = User.query.filter_by(email=email).first()
-        # TODO: Fix the add admin account part
-        if user or "admin" in email:
-            if check_password_hash(user.password, password) or "admin" in email:
+        if user:
+            if check_password_hash(user.password, password):
                 flash("Erfolgreich eingeloggt!", category="success")
                 login_user(user, remember=False)
                 return redirect(url_for("views.home"))
