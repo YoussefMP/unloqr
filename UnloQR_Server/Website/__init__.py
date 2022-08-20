@@ -7,7 +7,7 @@ from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
 try:
-    import .commands
+    from . import commands
 except ImportError:
     import commands
 
