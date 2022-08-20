@@ -120,7 +120,6 @@ def access_req():
                     msg.ACCESS_GRANTED.update({"data": date_str})
                     response = msg.ACCESS_GRANTED
                     socketio.emit("access_granted", response, room=sid)
-                    response = msg.LOGIN_GRANTED
                 else:
                     response = msg.DEVICE_OFFLINE
             else:
@@ -136,19 +135,20 @@ def access_req():
 @client_comms.route("/users_list", methods=["GET"])
 @cross_origin()
 def get_users_list():
-    devices = User.query.all()
+    all_users = User.query.all()
+
+    print(f"{datetime.now()} => Admin requesting the list of all the users to display")
 
     u_list = []
 
-    for user in devices:
+    for user in all_users:
         dummy_user = {"email": user.email,
                       "uid": user.id,
                       "name": user.name,
                       }
         u_list.append(dummy_user)
-
-    response = msg.USERS_LIST.update({"users": u_list})
-
+    msg.USERS_LIST["users"] = u_list
+    response = msg.USERS_LIST
     return jsonify(response)
 
 
