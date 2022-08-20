@@ -101,6 +101,8 @@ def access_req():
     password = data["password"]
     dev_name = data["dev_name"]
 
+    print(email, dev_name, password)
+
     user = User.query.filter_by(email=email).first()
     if user:
         if check_password_hash(user.password, password):
@@ -129,6 +131,7 @@ def access_req():
     else:
         response = msg.USER_DOESNT_EXIST
 
+    print(f"Respose to access request ===> {response}")
     return jsonify(response)
 
 
