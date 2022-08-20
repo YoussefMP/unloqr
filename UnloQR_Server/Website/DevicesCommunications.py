@@ -31,6 +31,11 @@ def handle_connect():
     pass
 
 
+@socketio.on('disconnect')
+def handle_disconnect():
+    pass
+
+
 @socketio.on('get_ID')
 def handle_id_request(data):
     """
@@ -88,9 +93,6 @@ def handle_manual_access_request():
     pass
 
 
-# TODO: handle disconnect
-def handle_disconnect():
-    pass
 
 
 

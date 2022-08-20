@@ -70,7 +70,6 @@ def reroute_to_confirmation(token):
     return render_template("set_password.html")
 
 
-# TODO: Write the update password method and page
 @auth.route("/forgot_password/<token>", methods=["GET", "POST"])
 def forgot_my_password(token):
     if request.method == "POST":
@@ -100,6 +99,7 @@ def forgot_my_password(token):
     return render_template("Forgot_password.html")
 
 
+# TODO: Remove this method
 @auth.route("/sign-up", methods=["GET", "POST"])
 def sign_up():
     if request.method == "POST":
@@ -128,7 +128,6 @@ def sign_up():
 
             db_man.add_user(new_user)
 
-            # TODO: Remove this default entry
             # device = Device(dev_name="A101")
             # db_man.add_allowed_device(device)
 

@@ -18,9 +18,10 @@ PW_UPDATE_SUCCESSFUL = {"ID": 132, "text": "Your Password has been updated"}
 PW_OLD_PASSWORD_WRONG = {"ID": 133, "text": "Typed old password is wrong"}
 
 # Access requests handling messages
-ACCESS_GRANTED = {"ID": 140, "text": "Access granted"}
+ACCESS_GRANTED = {"ID": 140, "text": "Access granted", "uid": "uid", "did": "did", "date": "date"}
 ACESS_DENIED = {"ID": 141, "text": "Access denied"}
 DENIED_ON_DEVICE = {"ID": 143, "text": "You are not allowed on this device"}
+DEVICE_OFFLINE = {"ID": 145, "text": "Device is Offline"}
 
 # Admin request messages
 USERS_LIST = {"ID": 150, "users": "users"}

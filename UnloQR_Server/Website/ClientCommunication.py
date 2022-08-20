@@ -3,9 +3,10 @@ from validate_email import validate_email
 from werkzeug.security import check_password_hash
 from .client_msg_gen import send_confirmation_email
 from flask import Blueprint, request, jsonify
-from .models import User, Log, Device, DummyUser
+from .models import User, Log, Device
 from . import messages as msg
 from . import socketio, db_man
+from datetime import datetime
 
 client_comms = Blueprint("client_comms", __name__)
 
@@ -49,7 +50,6 @@ def forgot_pw_req():
 
         user = User.query.filter_by(email=email).first()
         if user and user.email_confirmed:
-            # TODO: Change the token rerouting link to update password method
             send_confirmation_email(user.email, "auth.forgot_my_password")
             response = msg.PW_RESET_REQUEST_ACCEPTED
         elif not user.email_confirmed:
@@ -77,7 +77,7 @@ def change_pw_req():
         user = User.query.filter_by(email=email).first()
         if user and user.email_confirmed:
             if check_password_hash(user.password, old_password):
-                # TODO: update database
+                db_man.set_password(user, new_password)
                 response = msg.PW_UPDATE_SUCCESSFUL
             else:
                 response = msg.PW_OLD_PASSWORD_WRONG
@@ -93,6 +93,9 @@ def change_pw_req():
 def access_req():
     # TODO: Loggin
 
+    timestamp = datetime.now()
+    date_str = f"{timestamp.year}{timestamp.month}{timestamp.day}{timestamp.hour}{timestamp.minute}"
+
     data = request.get_json()
     email = data["email"]
     password = data["password"]
@@ -101,8 +104,6 @@ def access_req():
     user = User.query.filter_by(email=email).first()
     if user:
         if check_password_hash(user.password, password):
-
-            # TODO: Check if user is allowed on device
             device = Device.query.filter_by(dev_name=dev_name).first()
 
             allowed_user = False
@@ -114,13 +115,14 @@ def access_req():
             if allowed_user:
                 sid = device.sid
                 if sid:
+                    msg.ACCESS_GRANTED.update({"uid": user.id})
+                    msg.ACCESS_GRANTED.update({"did": dev_name})
+                    msg.ACCESS_GRANTED.update({"data": date_str})
                     response = msg.ACCESS_GRANTED
                     socketio.emit("access_granted", response, room=sid)
+                    response = msg.LOGIN_GRANTED
                 else:
-                    # TODO: Device is offline
-                    pass
-
-                response = msg.LOGIN_GRANTED
+                    response = msg.DEVICE_OFFLINE
             else:
                 response = msg.DENIED_ON_DEVICE
         else:
