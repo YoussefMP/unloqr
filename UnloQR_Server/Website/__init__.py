@@ -6,7 +6,10 @@ from flask_login import LoginManager
 from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
-import commands
+try:
+    from .Website import commands
+except ImportError
+    import commands
 
 __DEBUG__ = False
 db_man = DBManager("database.db")
