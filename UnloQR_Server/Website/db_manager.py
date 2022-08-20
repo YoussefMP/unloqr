@@ -28,7 +28,11 @@ class DBManager:
             print("DATABASE ALREADY EXISTENT")
 
     @click.command(name="add_admin")
-    def add_admin(self, admin):
+    def add_admin(self):
+        heroku_path = "./UnloQR_Server/Website/"
+        print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+        from .models import User
+        admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
         try:
             self.data_base.session.add(admin)
             self.data_base.session.commit()

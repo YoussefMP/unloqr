@@ -42,8 +42,7 @@ def create_app(__local__):
     with app.app_context():
         try:
             db_man.create_database(app, force=False)
-            admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
-            app.cli.add_command(db_man.add_admin(admin))
+            app.cli.add_command(db_man.add_admin)
         except Exception as err:
             print(f"=========> {err} <===========")
 
