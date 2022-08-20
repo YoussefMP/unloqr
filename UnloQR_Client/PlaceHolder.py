@@ -2,4 +2,5 @@ from datetime import datetime
 
 d = datetime.now()
 
-d.se
+
+print(d.year, d.month, d.day, d.hour, d.minute)

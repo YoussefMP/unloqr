@@ -133,18 +133,19 @@ def grant_access(response):
     did = response["did"]
     date = response["date"]
 
-    filename = f"./static/{uid}_{did}_{date}.avi"
-    record_video(filename)
+    filename = f"{uid}_{did}_{date}.avi"
+    filepath = f"./static/{filename}"
+    record_video(filepath)
 
     if __raspberry__:
         open_lock()
 
-    client_obj.upload_file(filename)
+    client_obj.upload_file(filepath, filename)
 
 
 # Dictionary containing the mapping of the response methods to the server msgs
 response_ids = {
     "hello": read_msg,
     "set_ID": set_id,
-    "access_granted": grant_access
+    "Access granted": grant_access
 }

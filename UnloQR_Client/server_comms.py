@@ -34,7 +34,7 @@ class Client:
         client.emit("get_ID", data)
 
     @client.event
-    def upload_file(self, file_path):
+    def upload_file(self, file_path, file_name):
         """
         Upload video file to the server
         :return:
