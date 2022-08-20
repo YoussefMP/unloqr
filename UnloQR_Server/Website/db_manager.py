@@ -16,7 +16,9 @@ class DBManager:
         local_path = "./Website"
         heroku_path = "./UnloQR_Server/Website/"
 
-        print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+        # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+
+        print(not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force)
 
         if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force:
             try:
@@ -27,12 +29,11 @@ class DBManager:
         else:
             print("DATABASE ALREADY EXISTENT")
 
-        print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+        # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
 
-    @click.command(name="add_admin")
     def add_admin(self):
         heroku_path = "./UnloQR_Server/Website/"
-        print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
+        # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
         from .models import User
         admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
         try:

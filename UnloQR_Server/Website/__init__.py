@@ -46,10 +46,10 @@ def create_app(__local__):
             print(f"=========> {err} <===========")
 
         try:
-            app.cli.add_command(db_man.add_admin)
+            db_man.add_admin()
         except Exception as err:
             print(f"---------------- {err} ---------------")
-            
+
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
