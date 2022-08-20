@@ -31,12 +31,10 @@
       <div class="collapse navbar-collapse" id="navbar">
         <div class="navbar-nav">
           {% if user.is_authenticated %}
-          <a class="nav-item nav-link" id="home" href="/">Users</a>
-          <a class="nav-item nav-link" id="devices" href="/devices">Devices</a>
-          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+          <a class="nav-item nav-link" id="home" href="/">Benutzer</a>
+          <a class="nav-item nav-link" id="devices" href="/devices">Geräte</a>
+          <a class="nav-item nav-link" id="logout" href="/logout">Ausloggen</a>
           {% else %}
-          <a class="nav-item nav-link" id="login" href="/login">Login</a>
-          <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
           {% endif %}
         </div>
       </div>

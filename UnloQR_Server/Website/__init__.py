@@ -1,5 +1,4 @@
 import sqlite3
-
 import sqlalchemy.exc
 from werkzeug.security import generate_password_hash
 from flask_socketio import SocketIO
@@ -7,6 +6,7 @@ from flask_login import LoginManager
 from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
+import commands
 
 __DEBUG__ = False
 db_man = DBManager("database.db")
@@ -27,6 +27,7 @@ def create_app(__local__):
     set_socketio(serv_socketio)
 
     db.init_app(app)
+    commands.init_app(app)
 
     from .views import views
     from .auth import auth

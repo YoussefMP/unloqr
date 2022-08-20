@@ -42,6 +42,7 @@ def home():
             flash("Device ID könnte nicht in der Database gefunden werden", category="error")
 
         return redirect(url_for("views.home"))
+
     return render_template("home.html", user=current_user, db=User)
 
 

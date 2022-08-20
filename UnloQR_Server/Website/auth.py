@@ -21,11 +21,11 @@ def login():
         # TODO: Fix the add admin account part
         if user or "admin" in email:
             if check_password_hash(user.password, password) or "admin" in email:
-                flash("Logged in Successfully!", category="success")
+                flash("Erfolgreich eingeloggt!", category="success")
                 login_user(user, remember=False)
                 return redirect(url_for("views.home"))
             else:
-                flash("Incorrect password, try again.", category="error")
+                flash("Falsches Passwort, versuchen Sie es erneut.", category="error")
         else:
             flash(f"Es existiert kein Konto für die email-adresse: {email}.", category="error")
 
@@ -161,43 +161,8 @@ def devices_view():
 @login_required
 def delete_user_with_id(uid):
     db_man.delete_user_by_id(User.query.filter_by(id=uid))
-    flash("Logged in Successfully!", category="success")
+    flash("Benutzer wurde erfolgreich gelöscht", category="success")
     return redirect(url_for("views.home"))
-
-
-# @auth.route("/add_user", methods=["GET", "POST"])
-# @login_required
-# def add_user_view():
-#
-#     if request.method == "POST":
-#         email = request.form.get("email")
-#         isvalid = validate_email(email)
-#
-#         if isvalid:
-#             flash("User added to database!", category="success")
-#
-#             user = User.query.filter_by(email=email).first()
-#             if user:
-#                 flash("Die email-adresse ist schon verwendet", category="error")
-#             else:
-#                 new_user = User(email=email)
-#
-#                 db_man.add_user(new_user)
-#
-#                 log_entry = Log(video="Hello", activity="User Added", user_id=new_user.id)
-#                 db_man.add_log(log_entry)
-#
-#                 flash(f"Confirmation email sent to {email}.", category="success")
-#
-#                 send_confirmation_email(email, "auth.reroute_to_confirmation")
-#
-#                 return redirect(url_for("views.home"))
-#         else:
-#             flash("Invalid email", category="error")
-#
-#     return render_template("VideoViewer.html", user=current_user)
-
-pass
 
 
 # _________________ Video Handling _________________

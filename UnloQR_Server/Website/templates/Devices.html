@@ -3,18 +3,17 @@
 
 
 
-<h1 align="center">Devices</h1>
+<h1 align="center">Geräte</h1>
 <body>
 
   <table class="table mt-3" content="width=device-width,  initial-scale=1">
     <thread>
       <tr>
         {% for header in db.query.statement.columns.keys()%}
-        {% if header != "online" %}
+        {% if header != "sid"%}
           <th class="col text-left col-md-auto"> {{ header }} </th>
         {% endif %}
         {% endfor %}
-        <th class="col text-left col-md-auto"> Logs </th>
       </tr>
     </thread>
     <tbody>
@@ -22,8 +21,7 @@
         <tr>
           <th class="text-left">{{ device.id }}</th>
           <td class="text-left">{{ device.dev_name }}</td>
-          <td class="text-left">{{ device.sid }}</td>
-          <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
+          <td class="text-left">{{ "Ja" if (device.sid != "Null" and device.sid != None) else "Nein" }}</td>
         </tr>
         {% endfor %}
 

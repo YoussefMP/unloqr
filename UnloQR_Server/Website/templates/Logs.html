@@ -48,7 +48,9 @@
         <tr>
           <th class="text-left">{{ log.time }}</th>
           <td class="text-left">{{ log.activity }}</td>
-          <td class="text-center"><a class="link-primary" href="{{ url_for('auth.open_vid_modal', vid_path=log.video) }}">Watch</a></td>
+          {% if log.video %}
+            <td class="text-center"><a class="link-primary" href="{{ url_for('auth.open_vid_modal', vid_path=log.video) }}">Watch</a></td>
+          {% endif %}
         </tr>
         {% endfor %}
 

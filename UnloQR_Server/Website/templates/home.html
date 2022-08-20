@@ -3,12 +3,12 @@
 
 
 
-<h1 align="center">Users</h1>
+<h1 align="center">Benutzer</h1>
 <body>
 
   <div class="text-right">
     <button type="button" class="btn btn-primary mr-4 mb-2" data-toggle="modal" data-target="#AddUser">
-      <i class="fa fa-plus"></i> Add User</button>
+      <i class="fa fa-plus"></i> Benutzer hinzufügen </button>
   </div>
 
 <form method="POST">
@@ -34,7 +34,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary custom" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary custom" data-dismiss="modal">Abbrechen</button>
           <button type="submit" class="btn btn-primary custom"> Add </button>
         </div>
       </div>
@@ -47,25 +47,29 @@
       <tr>
         {% for header in db.query.statement.columns.keys()%}
         {% if header != "password" %}
-          <th class="col text-left col-md-auto"> {{ header }} </th>
+          {% if header != "email_confirmed" %}
+            <th class="col text-center col-md-auto"> {{ header }} </th>
+          {% else %}
+            <th class="col text-center col-md-auto"> E-Mail bestätigt </th>
+          {% endif %}
         {% endif %}
         {% endfor %}
-        <th class="col text-left col-md-auto"> Logs </th>
+        <th class="col text-center col-md-auto"> Logs </th>
       </tr>
     </thread>
     <tbody>
         {% for user in db.query.all() %}
         {% if user.id != 1 %}
           <tr>
-            <th class="text-left">{{ user.id }}</th>
-            <td class="text-left">{{ user.email }}</td>
-            <td class="text-left">{{ user.name }}</td>
+            <th class="text-center">{{ user.id }}</th>
+            <td class="text-center">{{ user.email }}</td>
+            <td class="text-center">{{ user.name }}</td>
             {% if user.email_confirmed %}
-              <td class="text-left"> Yes </td>
+              <td class="text-center"> Ja </td>
             {% else %}
-              <td class="text-left"> No </td>
+              <td class="text-center"> Nein </td>
             {% endif %}
-            <td class="text-left"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Show</a></td>
+            <td class="text-center"><a class="link-primary" href="{{url_for('auth.logs_view', uid=user.id) }}">Sehen</a></td>
           </tr>
         {% endif %}
         {% endfor %}

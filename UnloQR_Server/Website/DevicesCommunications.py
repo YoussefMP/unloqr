@@ -1,3 +1,4 @@
+from werkzeug.security import check_password_hash
 from flask import Blueprint, request
 from .models import Device, User, Log
 from . import db_man, socketio, app
@@ -32,8 +33,26 @@ def handle_connect():
 
 
 @socketio.on('disconnect')
-def handle_disconnect():
-    pass
+def handle_disconnect(data):
+    print(f"Device with ID {data['id']} was disconnected")
+
+    did = data["id"]
+    device = Device.query.filter_by(dev_name=did).first()
+    db_man.set_session_id(device, "Null")
+
+    print("session Id was nullified")
+
+
+@socketio.on("man_open_request")
+def handle_manual_access_request(data):
+    password = data["password"]
+
+    sid = request.sid
+
+    admin = User.query.filter_by(id=1).first()
+    if check_password_hash(admin.password, password):
+        response = {"ID": 140, "text": "Access granted", "uid": -1, "did": "did", "date": "date"}
+        socketio.emit("access_granted", response, room=sid)
 
 
 @socketio.on('get_ID')
@@ -88,9 +107,6 @@ def handle_file_upload(data):
     print("File Got")
 
 
-# TODO: Handle Manual lock open
-def handle_manual_access_request():
-    pass
 
 
 
