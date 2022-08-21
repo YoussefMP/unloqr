@@ -23,6 +23,15 @@ def home():
                 new_user = User(email=email)
                 db_man.add_user(new_user, device)
                 send_confirmation_email(email, "auth.reroute_to_confirmation")
+
+                log_entry = Log(activity="Benutzer hinzugefügt.", user_id=User.query.filter_by(email=email).first().id)
+                db_man.add_log(log_entry)
+
+                log_entry = Log(activity=f"Benutzer auf der list von ({dev_name}) addiert",
+                                user_id=User.query.filter_by(email=email).first().id
+                                )
+                db_man.add_log(log_entry)
+
                 flash("Konto wurde erfolgreich erstellt, bitte bestätigen Sie Ihre E-Mail-Adresse.", category="success")
             else:
                 already_in = False
@@ -33,7 +42,7 @@ def home():
                         break
                 if not already_in:
                     db_man.add_user_to_device(device, user)
-                    log_entry = Log(activity=f"Added to Device ({dev_name})",
+                    log_entry = Log(activity=f"Benutzer auf der list von ({dev_name}) addiert",
                                     user_id=User.query.filter_by(email=email).first().id
                                     )
                     db_man.add_log(log_entry)

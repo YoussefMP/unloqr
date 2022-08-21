@@ -93,8 +93,8 @@ def change_pw_req():
 def access_req():
     # TODO: Loggin
 
-    timestamp = datetime.now()
-    date_str = f"{timestamp.year}{timestamp.month}{timestamp.day}{timestamp.hour}{timestamp.minute}"
+    now = datetime.now()
+    date_str = "%02d%02d%04d%02d%02d%02d" % (now.day, now.month, now.year, now.hour, now.minute, now.second)
 
     data = request.get_json()
     email = data["email"]
@@ -119,9 +119,10 @@ def access_req():
                 if sid:
                     msg.ACCESS_GRANTED.update({"uid": user.id})
                     msg.ACCESS_GRANTED.update({"did": dev_name})
-                    msg.ACCESS_GRANTED.update({"data": date_str})
+                    msg.ACCESS_GRANTED.update({"date": date_str})
                     response = msg.ACCESS_GRANTED
                     socketio.emit("access_granted", response, room=sid)
+
                 else:
                     response = msg.DEVICE_OFFLINE
             else:
@@ -139,9 +140,6 @@ def access_req():
 @cross_origin()
 def get_users_list():
     all_users = User.query.all()
-
-    print(f"{datetime.now()} => Admin requesting the list of all the users to display")
-
     u_list = []
 
     for user in all_users:

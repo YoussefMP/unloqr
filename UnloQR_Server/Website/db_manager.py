@@ -107,4 +107,11 @@ class DBManager:
     def add_user_to_device(self, device, user):
         device.allowed_users.append(user)
         self.data_base.session.commit()
+
+    def delete_device_by_id(self, device):
+        try:
+            self.data_base.session.delete(device.first())
+            self.data_base.session.commit()
+        except sqlite3.DataError or sqlalchemy.exc.IntegrityError as d_err:
+            print(f"Data error while deleting: {d_err}")
     #####################################################

@@ -14,6 +14,7 @@
           <th class="col text-left col-md-auto"> {{ header }} </th>
         {% endif %}
         {% endfor %}
+          <th class="col text-center col-md-auto"> Entfernen </th>
       </tr>
     </thread>
     <tbody>
@@ -22,12 +23,14 @@
           <th class="text-left">{{ device.id }}</th>
           <td class="text-left">{{ device.dev_name }}</td>
           <td class="text-left">{{ "Ja" if (device.sid != "Null" and device.sid != None) else "Nein" }}</td>
+          <td class="text-center"><a class="link-primary" href="{{ url_for('auth.delete_device_with_id', did=device.id) }}">löschen</a></td>
         </tr>
         {% endfor %}
 
     </tbody>
   </table>
+
 </body>
 
-{% block script %} {% endblock %}
+{% block script %}{% endblock %}
 {% endblock %}
