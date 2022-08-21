@@ -94,6 +94,7 @@ def handle_file_upload(data):
         path = str(Path(os.path.abspath(__file__)).parent) + "\\static\\uploads\\" + data["filename"]
         print(path)
         print(f" Listing Path(os.path.abspath(__file__)).parent => {os.listdir(Path(os.path.abspath(__file__)).parent)}")
+        print(f"Video path give = {path}")
 
         # for testing
         # path = f"./Website/static/uploads/{data['filename']}"
