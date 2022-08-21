@@ -18,6 +18,7 @@ def login_request():
     # TODO: Logging
 
     data = request.get_json()
+    print(data)
     email = data["email"]
     password = data["password"]
 
