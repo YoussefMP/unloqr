@@ -4,7 +4,7 @@ from Client_FileIO import ConfigManager
 import socketio
 import base64
 import time
-
+from flask import jsonify
 
 client = socketio.Client()
 
@@ -13,17 +13,15 @@ class Client:
 
     def __init__(self):
         self.c_man = ConfigManager("./_Config")
-        self.server_url = "https://unloqr.herokuapp.com/"
-        # self.server_url = "http://127.0.0.1:5000"
+        # self.server_url = "https://unloqr.herokuapp.com/"
+        self.server_url = "http://127.0.0.1:5000"
 
         set_c_man(self.c_man)
         set_client(self)
         
         print("Connecting to server...")
         tries = 0
-        while(False):
-            if tries ==10:
-                break
+        while tries < 10:
             try:
                 tries += 1
                 client.connect(self.server_url, wait_timeout=15)
@@ -54,7 +52,7 @@ class Client:
         Upload video file to the server
         :return:
         """
-        name = file_path[file_path.rfind("/")+1:]
+        name = file_name
         file = open(file_path, "rb")
         video = base64.b64encode(file.read())
 
@@ -68,14 +66,18 @@ class Client:
         print(f"testing if the password is passed on {password}")
         data = {"password": password}
         client.emit("man_open_request", data)
-    
-    @staticmethod
+
     @client.event
-    def disconnect():
-        client.emit("disconnect")
+    def on_disconnect(self):
+        temp_id = self.did
+        data = {"id": temp_id}
+        client.emit("exit", data=data)
+        time.sleep(1)
+        client.disconnect()
+
 
 @client.on("*")
-def get_id(event, data):
+def get_id(event, data=None):
     """
     This function calls the FileIO to set up the config file on receiving new_id.
     :param
@@ -83,9 +85,14 @@ def get_id(event, data):
     data: response received from the server
     """
     print("Received EVENT")
-    receiver_thread = threading.Thread(target=response_ids[event](data))
+    if data is None:
+        receiver_thread = threading.Thread(target=response_ids[event])
+    else:
+        receiver_thread = threading.Thread(target=response_ids[event](data))
+
     receiver_thread.start()
     receiver_thread.join()
+
 
 def open_com_chanel(cl):
     cl.request_id()

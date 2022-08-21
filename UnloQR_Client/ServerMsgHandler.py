@@ -1,6 +1,5 @@
 import os
 import time
-from Client_FileIO import ConfigManager
 from datetime import datetime
 import cv2
 try:
@@ -91,7 +90,7 @@ def record_video(file_path):
             break
 
         cap_end = datetime.now()
-        if (cap_end - cap_start).seconds > 10:
+        if (cap_end - cap_start).seconds > 5:
             break
 
     cap.release()
@@ -134,6 +133,7 @@ def grant_access(response):
     :param response:
     :return:
     """
+    print(f"response = {response}")
     uid = response["uid"]
     did = response["did"]
     date = response["date"]
@@ -141,9 +141,14 @@ def grant_access(response):
     if uid != -1:
         filename = f"{uid}_{did}_{date}.avi"
         filepath = f"./static/{filename}"
+
+        # TODO Uncomment and test when camera is here
         record_video(filepath)
+
+        # filepath = "./static/AMV.mp4"
+
     else:
-        sleep(2)
+        time.sleep(2)
 
     if __raspberry__:
         open_lock()

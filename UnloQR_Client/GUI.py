@@ -10,7 +10,7 @@ def is_connected(host='http://google.com'):
     try:
         urllib.request.urlopen(host)
         return True
-    except urllib.error.HTTPError or urllib.error.URLError as err:
+    except Exception as err:
         return False
 
 
@@ -19,7 +19,8 @@ class GUIManager:
         
         self.client = client
         did = self.client.c_man.get_my_id()
-        
+        self.client.did = did
+
         self.window = Tk()
         main_frame = Frame(self.window)
         main_frame.configure(bg="white")
@@ -34,19 +35,23 @@ class GUIManager:
         mid_frame.configure(bg="white")
         mid_frame.place(in_=main_frame, anchor="center", relx=0.5, rely=0.5)
 
+        self.server_update = StringVar()
+        self.wifi_label = Label(main_frame, textvariable=self.server_update)
+        self.wifi_label.configure(bg="white")
+        self.wifi_label.grid(row=0, column=2, sticky="NE")
+
         wifi_icon = ImageTk.PhotoImage(self.icon)
         self.wifi_label = Label(main_frame, image=wifi_icon)
-#        self.wifi_label = Label(main_frame, text="Here")
         self.wifi_label.configure(bg="white")
         self.wifi_label.grid(row=0, column=5, sticky="NE")
-#        self.wifi_label.pack(anchor="e")
-#        connection_status_thread = Thread(target=self.update_status())
+
+        connection_status_thread = Thread(target=self.update_status())
+        connection_status_thread.start()
 
         gear_icon = ImageTk.PhotoImage(Image.open("./static/GearIcon80.png"))
         man_open_btn = Button(main_frame, image=gear_icon, command=self.open_manually)
         man_open_btn.configure(bg="white")
         man_open_btn.grid(row=0, column=4, pady=(20, 0), sticky="NE")
-#        man_open_btn.pack(anchor="e")
 
         Grid.columnconfigure(main_frame, 3, weight=1)
         
@@ -58,9 +63,13 @@ class GUIManager:
 
         label = Label(mid_frame, image=photo)
         label.pack()
-        label_text = Label(mid_frame, text=did, font='Times 32')
+
+        self.id_text = StringVar()
+        self.id_text.set(did)
+        label_text = Label(mid_frame, textvariable=self.id_text, font='Times 32')
         label_text.configure(bg="white")
         label_text.pack()
+        id_update = Thread(target=self.update_id_label())
 
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
         # self.window.attributes("-fullscreen", True)
@@ -71,36 +80,57 @@ class GUIManager:
         self.window.mainloop()
         self.window.quit()
 
-    def update_status(self):
-        connection_status_update = self.window.after(5000, self.update_status)
-        if is_connected():
-            self.icon = Image.open("./static/WiFiIcon.png")
-            text = "WIFI_ON"
-        else:
-            text = "WIFI_OFF"
-            self.icon = Image.open("./static/NoInternetIcon.png")
-        
-        wifi_icon = ImageTk.PhotoImage(self.icon)
-        self.wifi_label.config(image=wifi_icon)
-        self.window.update_idletasks()
-        
+    def get_client(self):
+        return self.client
+
     def on_closing(self):
-        self.client.disconnect()
-        
+        print("DEFINING DICONNECT")
+        self.client.on_disconnect()
+        self.window.destroy()
+
     def open_manually(self):
         self.win = Toplevel()
-        win.geometry("350x75")
+        self.win.geometry("350x50")
         
-        win.wm_title("Admin access")
+        self.win.wm_title("Admin access")
         
-        password_label = Label(win, text="Admin Passwort:")
+        password_label = Label(self.win, text="Admin Passwort:")
         password_label.grid(row=0, column=0, padx=(5, 5))
     
-        self.password_txt = StringVar()
-        self.password_box = Entry(win, textvariable=self.password_txt, show="*")
-        self.password_box.grid(row=0, column=1, padx=(0, 5))
-        Grid.columnconfigure(win, 1, weight=1)
+        password_txt = StringVar()
+        password_box = Entry(self.win, textvariable=password_txt, show="*")
+        password_box.grid(row=0, column=1, padx=(0, 5))
+        Grid.columnconfigure(self.win, 1, weight=1)
         
-        submit_btn = Button(win, text="Öffnen", command=lambda: self.client.request_man_open(self.password_txt.get()))
+        submit_btn = Button(self.win, text="Öffnen", command=self.close_modal)
         submit_btn.grid(row=0, column=3, padx=(0, 5))
-        
+
+    def close_modal(self):
+        self.client.request_man_open(self.password_txt.get())
+        self.win.destroy()
+        self.win.update()
+
+    def update_status(self):
+        connection_status_update = self.window.after(2500, self.update_status)
+        if is_connected():
+            self.icon = Image.open("./static/WiFiIcon.png")
+            self.wifi_label.grid(pady=(0, 0), padx=(0, 0))
+        else:
+            self.icon = Image.open("./static/NoInternetIcon.png")
+            self.wifi_label.grid(pady=(10, 0), padx=(10, 0))
+
+        wifi_icon = ImageTk.PhotoImage(self.icon)
+        self.wifi_label.configure(image=wifi_icon)
+        self.wifi_label.image = wifi_icon
+
+        self.window.update_idletasks()
+
+    def update_id_label(self):
+        update_id_label = self.window.after(2000, self.update_id_label)
+
+        did = self.client.c_man.get_my_id()
+        if did != "XXXX":
+            self.client.did = did
+            self.id_text.set(did)
+            self.window.update_idletasks()
+            self.window.after_cancel(update_id_label)
