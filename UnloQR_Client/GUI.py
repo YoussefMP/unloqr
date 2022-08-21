@@ -1,4 +1,6 @@
 from tkinter import Tk, Label, Frame, Button, Grid, Toplevel, StringVar, Entry
+
+import socketio.exceptions
 from PIL import Image, ImageTk
 from os import path
 import time
@@ -85,7 +87,10 @@ class GUIManager:
 
     def on_closing(self):
         print("DEFINING DICONNECT")
-        self.client.on_disconnect()
+        try:
+            self.client.on_disconnect()
+        except socketio.exceptions.BadNamespaceError:
+            print("Server is out")
         self.window.destroy()
 
     def open_manually(self):

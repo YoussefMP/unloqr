@@ -62,7 +62,7 @@ def get_video_type(filename):
     filename, ext = os.path.splitext(filename)
     if ext in VIDEO_TYPE:
         return VIDEO_TYPE[ext]
-    return VIDEO_TYPE["avi"]
+    return VIDEO_TYPE["mp4"]
 
 
 def record_video(file_path):
@@ -139,7 +139,7 @@ def grant_access(response):
     date = response["date"]
     
     if uid != -1:
-        filename = f"{uid}_{did}_{date}.avi"
+        filename = f"{uid}_{did}_{date}.mp4"
         filepath = f"./static/{filename}"
 
         # TODO Uncomment and test when camera is here

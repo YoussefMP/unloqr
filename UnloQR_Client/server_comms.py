@@ -13,8 +13,8 @@ class Client:
 
     def __init__(self):
         self.c_man = ConfigManager("./_Config")
-        # self.server_url = "https://unloqr.herokuapp.com/"
-        self.server_url = "http://127.0.0.1:5000"
+        self.server_url = "https://unloqr.herokuapp.com/"
+        # self.server_url = "http://127.0.0.1:5000"
 
         set_c_man(self.c_man)
         set_client(self)
