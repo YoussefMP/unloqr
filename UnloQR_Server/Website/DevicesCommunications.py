@@ -81,7 +81,7 @@ def handle_file_upload(data):
     import re
     from . import __DEBUG__
 
-    dev_name_regex = re.compile(r"""(?P<uid>.*?)_(?P<dev>....)_(?P<date>.*?)\.avi""")
+    dev_name_regex = re.compile(r"""(?P<uid>.*?)_(?P<dev>....)_(?P<date>.*?)\.(?:avi|mp4)""")
     dev_name = dev_name_regex.match(data["filename"]).group("dev")
     uid = int(dev_name_regex.match(data["filename"]).group("uid"))
     date = dev_name_regex.match(data["filename"]).group("date")
