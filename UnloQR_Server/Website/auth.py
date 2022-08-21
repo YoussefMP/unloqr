@@ -132,6 +132,7 @@ def delete_user_with_id(uid):
 
 # _________________ Video Handling _________________
 def generate_frames(path):
+    print(path)
     print(f"Video existence => {os.path.exists(path)}")
     cap = cv2.VideoCapture(path)
 
@@ -158,7 +159,7 @@ def video_viewer(log_id):
     import re
     global vid_path
 
-    dev_name_regex = re.compile(r"""(?P<uid>.*?)_(?P<dev>....)_(?P<date>.*?)\.avi""")
+    dev_name_regex = re.compile(r"""(?P<uid>.*?)_(?P<dev>....)_(?P<date>.*?)\.(?:avi|mp4)""")
 
     log_entry = Log.query.filter_by(id=log_id).first()
     vid_path = log_entry.video
@@ -178,7 +179,10 @@ def open_vid_modal():
 
     global vid_path
     from pathlib import Path
-    vid_path = str(Path(os.path.abspath(__file__)).parent) + vid_path[1:].replace("/", "\\")
+
+    # vid_path = str(Path(os.path.abspath(__file__)).parent) + vid_path[1:].replace("/", "\\")
+    print("IN OPENM MODALS")
+    print(vid_path)
 
     return Response(generate_frames(vid_path), mimetype='multipart/x-mixed-replace; boundary=frame')
 
