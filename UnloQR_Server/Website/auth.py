@@ -178,12 +178,7 @@ def video_viewer(log_id):
 def open_vid_modal():
 
     global vid_path
-    from pathlib import Path
-
     # vid_path = str(Path(os.path.abspath(__file__)).parent) + vid_path[1:].replace("/", "\\")
-    print("IN OPENM MODALS")
-    print(vid_path)
-
     return Response(generate_frames(vid_path), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

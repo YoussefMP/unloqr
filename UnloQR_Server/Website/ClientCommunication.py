@@ -29,6 +29,7 @@ def login_request():
         uid = user.id
         if check_password_hash(user.password, password):
             msg.LOGIN_GRANTED.update({"UID": uid})
+            msg.LOGIN_GRANTED.update({"name": user.name})
             response = msg.LOGIN_GRANTED
         else:
             response = msg.LOGIN_DENIED
@@ -147,6 +148,7 @@ def get_users_list():
         dummy_user = {"email": user.email,
                       "uid": user.id,
                       "name": user.name,
+                      "email_confirmed": user.email_confirmed
                       }
         u_list.append(dummy_user)
     msg.USERS_LIST["users"] = u_list
