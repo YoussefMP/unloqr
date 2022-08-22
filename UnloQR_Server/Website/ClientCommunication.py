@@ -163,15 +163,12 @@ def get_users_list():
 def add_user():
     response = msg.OK_MSG
 
+    data = request.get_json()
+
     if request.method == "POST":
 
-        print("___________________________________")
-        print(request.form)
-        print(request.form.get("email"))
-        print("___________________________________")
-
-        email = request.form.get("email")
-        dev_name = request.form.get("dev_name")
+        email = data["email"]
+        dev_name = data["dev_name"]
 
         device = Device.query.filter_by(dev_name=dev_name).first()
         user = User.query.filter_by(email=email).first()
@@ -204,7 +201,9 @@ def add_user():
 @cross_origin()
 def delete_user():
     try:
-        uid = request.form.get("uid")
+        data = request.get_json()
+
+        uid = data["uid"]
         db_man.delete_user_by_id(User.query.filter_by(id=uid))
         response = msg.USER_DELETED
     except Exception as err:
