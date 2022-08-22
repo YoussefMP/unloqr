@@ -5,10 +5,8 @@ from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
 import sqlite3
-
 import click
 from flask.cli import with_appcontext
-from .models import Log, Device, User, user_device
 
 __DEBUG__ = False
 db_man = DBManager("database.db")
@@ -81,6 +79,7 @@ def create_all():
 @click.command(name="add_admin")
 @with_appcontext
 def add_admin():
+    from .models import User
     admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
     try:
         db_man.add_user(admin)
