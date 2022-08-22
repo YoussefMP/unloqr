@@ -145,6 +145,8 @@ def get_users_list():
     u_list = []
 
     for user in all_users:
+        if user.id == 1:
+            continue
         dummy_user = {"email": user.email,
                       "uid": user.id,
                       "name": user.name,
@@ -160,6 +162,8 @@ def get_users_list():
 @cross_origin()
 def add_user():
     response = msg.OK_MSG
+
+    print(request)
 
     if request.method == "POST":
         email = request.form.get("email")
