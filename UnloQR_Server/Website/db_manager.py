@@ -19,7 +19,9 @@ class DBManager:
         # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
 
         if path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name):
+            print("removing old db")
             os.remove(heroku_path + self.name)
+            print(path.exists(heroku_path + self.name))
 
         if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force:
             print("In Creating databsase bloc __________")
@@ -32,6 +34,7 @@ class DBManager:
                     app.config['SQLALCHEMY_DATABASE_URI'] = uri
                 self.data_base.drop_all()
                 self.data_base.create_all(app=app)
+                print("created new DB")
             except sqlite3.OperationalError as err:
                 print(f"Catched {err} ===========")
         else:
