@@ -1,14 +1,14 @@
 import os
-import sqlite3
-import sqlalchemy.exc
-from werkzeug.security import generate_password_hash
-from .commands import create_all, add_admin
 from flask_socketio import SocketIO
 from flask_login import LoginManager
 from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
+import sqlite3
 
+import click
+from flask.cli import with_appcontext
+from .models import Log, Device, User, user_device
 
 __DEBUG__ = False
 db_man = DBManager("database.db")
@@ -70,4 +70,21 @@ def create_app(__local__):
 def set_socketio(socket):
     global socketio
     socketio = socket
+
+
+@click.command(name="create_tables")
+@with_appcontext
+def create_all():
+    db.create_all()
+
+
+@click.command(name="add_admin")
+@with_appcontext
+def add_admin():
+    admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
+    try:
+        db_man.add_user(admin)
+    except sqlite3.IntegrityError as err:
+        print(f"_______Adding Admin err \n{err}\n __________")
+
 
