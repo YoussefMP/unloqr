@@ -18,10 +18,10 @@ class DBManager:
 
         # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
 
-        if path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name):
-            print("removing old db")
-            os.remove(heroku_path + self.name)
-            print(path.exists(heroku_path + self.name))
+        # if path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name):
+        #     print("removing old db")
+        #     os.remove(heroku_path + self.name)
+        #     print(path.exists(heroku_path + self.name))
 
         if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force:
             print("In Creating databsase bloc __________")
