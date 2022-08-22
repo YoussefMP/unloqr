@@ -62,11 +62,6 @@ def create_app(__local__):
     def load_user(id):
         return User.query.get(int(id))
 
-    @click.command(name="create_tables")
-    @with_appcontext
-    def create_all():
-        db.create_all()
-
     @click.command(name="add_admin")
     @with_appcontext
     def add_admin():
@@ -77,7 +72,7 @@ def create_app(__local__):
         except sqlite3.IntegrityError as err:
             print(f"_______Adding Admin err \n{err}\n __________")
 
-    return app, socketio
+    return app, socketio, db
 
 
 def set_socketio(socket):

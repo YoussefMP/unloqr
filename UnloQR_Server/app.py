@@ -8,7 +8,17 @@ except ImportError:
     from Website import create_app
     __local__ = True
 
-app, socketio = create_app(__local__)
+import click
+from flask.cli import with_appcontext
+
+app, socketio, db = create_app(__local__)
+
+
+@click.command(name="create_tables")
+@with_appcontext
+def create_all():
+    db.create_all()
+
 
 if __name__ == "__main__":
 
