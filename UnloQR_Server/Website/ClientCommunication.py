@@ -163,9 +163,13 @@ def get_users_list():
 def add_user():
     response = msg.OK_MSG
 
-    print(request)
-
     if request.method == "POST":
+
+        print("___________________________________")
+        print(request.form)
+        print(request.form.get("email"))
+        print("___________________________________")
+
         email = request.form.get("email")
         dev_name = request.form.get("dev_name")
 
