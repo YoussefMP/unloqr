@@ -26,12 +26,13 @@ class DBManager:
         if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force:
             print("In Creating databsase bloc __________")
             try:
-                uri = os.getenv("DATABASE_URL")
-                print(f"++++++++++ {uri}")
-                # or other relevant config var
-                if uri.startswith("postgres://"):
-                    uri = uri.replace("postgres://", "postgresql://", 1)
-                    app.config['SQLALCHEMY_DATABASE_URI'] = uri
+                try:
+                    prodURI = os.getenv('DATABASE_URL')
+                    prodURI = prodURI.replace("postgres://", "postgresql://")
+                    app.config['SQLALCHEMY_DATABASE_URI'] = prodURI
+                except:
+                    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql:///{self.name}'
+
                 self.data_base.drop_all()
                 self.data_base.create_all(app=app)
                 print("created new DB")
