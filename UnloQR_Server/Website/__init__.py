@@ -2,6 +2,7 @@ import os
 import sqlite3
 import sqlalchemy.exc
 from werkzeug.security import generate_password_hash
+from .commands import create_all, add_admin
 from flask_socketio import SocketIO
 from flask_login import LoginManager
 from .db_manager import DBManager
