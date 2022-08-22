@@ -18,10 +18,18 @@ class DBManager:
 
         # print(f"listdir of the path {heroku_path} ====> {os.listdir(heroku_path)}")
 
-        print(not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force)
+        if path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name):
+            os.remove(heroku_path + self.name)
 
         if not (path.exists(f'{local_path}/{self.name}') or path.exists(heroku_path + self.name)) or force:
+            print("In Creating databsase bloc __________")
             try:
+                uri = os.getenv("DATABASE_URL")
+                print(f"++++++++++ {uri}")
+                # or other relevant config var
+                if uri.startswith("postgres://"):
+                    uri = uri.replace("postgres://", "postgresql://", 1)
+                    app.config['SQLALCHEMY_DATABASE_URI'] = uri
                 self.data_base.drop_all()
                 self.data_base.create_all(app=app)
             except sqlite3.OperationalError as err:

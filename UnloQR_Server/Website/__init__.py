@@ -42,17 +42,17 @@ def create_app(__local__):
     app.register_blueprint(dev_comms, url_prefix="/")
     app.register_blueprint(client_comms, url_prefix="/")
 
-    from .models import User, Log, Device
-    with app.app_context():
-        try:
-            db_man.create_database(app, force=False)
-        except Exception as err:
-            print(f"=========> {err} <===========")
-
-        try:
-            db_man.add_admin()
-        except Exception as err:
-            print(f"---------------- {err} ---------------")
+    # from .models import User, Log, Device
+    # with app.app_context():
+    #     try:
+    #         db_man.create_database(app, force=False)
+    #     except Exception as err:
+    #         print(f"=========> {err} <===========")
+    #
+    #     try:
+    #         db_man.add_admin()
+    #     except Exception as err:
+    #         print(f"---------------- {err} ---------------")
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
