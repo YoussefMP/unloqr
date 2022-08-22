@@ -88,7 +88,7 @@ def forgot_my_password(token):
         if password2 == password1:
             db_man.set_password(user, password1)
 
-            log_entry = Log(activity="Recovered password", user_id=User.query.filter_by(email=email).first().id)
+            log_entry = Log(activity="Passwort geändert", user_id=User.query.filter_by(email=email).first().id)
             db_man.add_log(log_entry)
 
             flash("Passwort gespeichert!", category="success")

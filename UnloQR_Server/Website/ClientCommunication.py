@@ -204,8 +204,12 @@ def delete_user():
         data = request.get_json()
 
         uid = data["uid"]
-        db_man.delete_user_by_id(User.query.filter_by(id=uid))
-        response = msg.USER_DELETED
+        if uid != 1:
+            db_man.delete_user_by_id(User.query.filter_by(id=uid))
+            response = msg.USER_DELETED
+        else:
+            response = {"ID": 999, "text": "You sneaky bastard !!! "}
+
     except Exception as err:
         response = msg.SOMETHING_WENT_WRONG
 

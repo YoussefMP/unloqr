@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import sqlalchemy.exc
 from werkzeug.security import generate_password_hash
@@ -19,7 +20,11 @@ def create_app(__local__):
     global app
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "One Secret key to generate here"
-    app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{db_man.name}'
+    if __local__:
+        app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{db_man.name}'
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config["UPLOAD_FOLDER"] = "static/uploads/"
