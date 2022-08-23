@@ -71,7 +71,8 @@ def create_app(__local__):
         except sqlite3.IntegrityError as err:
             print(f"_______Adding Admin err \n{err}\n __________")
 
-    app.cli.add_command()
+    app.cli.add_command(create_all)
+    app.cli.add_command(add_admin)
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
