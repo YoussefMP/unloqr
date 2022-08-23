@@ -8,9 +8,6 @@ except ImportError:
     from Website import create_app
     __local__ = True
 
-import click
-from flask.cli import with_appcontext
-
 app, socketio, db = create_app(__local__)
 
 

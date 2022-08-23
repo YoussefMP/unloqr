@@ -24,6 +24,15 @@ def create_app(__local__):
     if __local__:
         app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{db_man.name}'
     else:
+        db_man.name = os.environ.get("DATABASE_URL").replace("postgres://", "")
+        try:
+            prodURI = os.getenv('DATABASE_URL')
+            prodURI = prodURI.replace("postgres://", "postgresql://")
+            app.config['SQLALCHEMY_DATABASE_URI'] = prodURI
+            print(f"replace old ulr to {prodURI}")
+        except:
+            app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql:///{db_man.name}'
+
         print(f"We are getting the env {os.environ.get('DATABASE_URL')}")
         app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
@@ -59,7 +68,7 @@ def create_app(__local__):
 
     @click.command(name="create_tables")
     @with_appcontext
-    def create_all():
+    def create_tables():
         print("Creating all DBS")
         db.create_all()
 
@@ -74,7 +83,7 @@ def create_app(__local__):
         except sqlite3.IntegrityError as err:
             print(f"_______Adding Admin err \n{err}\n __________")
 
-    app.cli.add_command(create_all)
+    app.cli.add_command(create_tables)
     app.cli.add_command(add_admin)
 
     login_manager = LoginManager()
