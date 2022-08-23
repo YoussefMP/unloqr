@@ -18,11 +18,8 @@ def login_request():
     # TODO: Logging
 
     data = request.get_json()
-    print(data)
     email = data["email"]
     password = data["password"]
-
-    is_valid = validate_email(email)
 
     user = User.query.filter_by(email=email).first()
     if user:

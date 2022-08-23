@@ -43,16 +43,35 @@ def create_app(__local__):
     app.register_blueprint(client_comms, url_prefix="/")
 
     from .models import User, Log, Device
-    with app.app_context():
-        try:
-            db_man.create_database(app, force=False)
-        except Exception as err:
-            print(f"=========> {err} <===========")
+    # with app.app_context():
+    #     try:
+    #         db_man.create_database(app, force=False)
+    #     except Exception as err:
+    #         print(f"=========> {err} <===========")
+    #
+    #     try:
+    #         db_man.add_admin()
+    #     except Exception as err:
+    #         print(f"---------------- {err} ---------------")
 
+    @click.command(name="create_tables")
+    @with_appcontext
+    def create_all():
+        print("Creating all DBS")
+        db.create_all()
+
+    @click.command(name="add_admin")
+    @with_appcontext
+    def add_admin():
+        print(f"Add admin command called")
+        from .models import User
+        admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
         try:
-            db_man.add_admin()
-        except Exception as err:
-            print(f"---------------- {err} ---------------")
+            db_man.add_user(admin)
+        except sqlite3.IntegrityError as err:
+            print(f"_______Adding Admin err \n{err}\n __________")
+
+    app.cli.add_command()
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
@@ -61,16 +80,6 @@ def create_app(__local__):
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
-
-    @click.command(name="add_admin")
-    @with_appcontext
-    def add_admin():
-        from .models import User
-        admin = User(email="admin@admin", name="admin", password=generate_password_hash("admin", method="sha256"))
-        try:
-            db_man.add_user(admin)
-        except sqlite3.IntegrityError as err:
-            print(f"_______Adding Admin err \n{err}\n __________")
 
     return app, socketio, db
 
