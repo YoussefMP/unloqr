@@ -1,6 +1,8 @@
 import os
 from flask_socketio import SocketIO
 from flask_login import LoginManager
+from werkzeug.security import generate_password_hash
+
 from .db_manager import DBManager
 from flask import Flask
 from datetime import timedelta
@@ -22,6 +24,7 @@ def create_app(__local__):
     if __local__:
         app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{db_man.name}'
     else:
+        print(f"We are getting the env {os.environ.get('DATABASE_URL')}")
         app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
