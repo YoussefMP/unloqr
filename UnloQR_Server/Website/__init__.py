@@ -33,8 +33,8 @@ def create_app(__local__):
         except:
             app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql:///{db_man.name}'
 
-        print(f"We are getting the env {os.environ.get('DATABASE_URL')}")
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+        # print(f"We are getting the env {os.environ.get('DATABASE_URL')}")
+        # app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
