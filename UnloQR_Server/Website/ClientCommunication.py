@@ -19,11 +19,16 @@ def login_request():
     email = data["email"]
     password = data["password"]
 
-    print(f"login request from {email}")
-    user = User.query.filter_by(email=email).first()
-    print(f"old db query return {user}")
-    user = db_man.data_base.session.query(User).filter(User.email == email).one()
-    print(f"new db query return {user}")
+    # print(f"login request from {email}")
+    # user = User.query.filter_by(email=email).first()
+    # print(f"old db query return {user}")
+
+    all_users = User.query.all()
+    for user in all_users:
+        print(f"Comparing {email} to {user.email}... {email == user.email}")
+        if email == user.email:
+            break
+        user = False
 
     if user:
         uid = user.id
