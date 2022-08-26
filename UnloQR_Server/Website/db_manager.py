@@ -50,7 +50,6 @@ class DBManager:
             if device:
                 device.allowed_users.append(new_user)
             print(f"Committing changes to the database ...")
-            self.data_base.session.flush
             self.data_base.session.commit()
         except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError as err:
             print(f"Error Message: {err}")

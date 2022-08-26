@@ -64,7 +64,7 @@ def reroute_to_confirmation(token):
 
             flash("Passwort gespeichert!", category="success")
 
-            return redirect(url_for("auth.login"))
+            return "<h1> Email Adresse bestätigt <h>"
         else:
             flash("Passwörter stimmen nicht überein", category="error")
 

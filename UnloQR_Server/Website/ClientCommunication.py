@@ -156,8 +156,14 @@ def get_users_list():
                       "email_confirmed": user.email_confirmed
                       }
         u_list.append(dummy_user)
+
+        print(f"for user {user} with email {user.email} do search")
+        user = User.query.filter_by(email=user.email).first()
+        print(f"{user} was retrieved with id {user.id}")
+
     msg.USERS_LIST["users"] = u_list
     response = msg.USERS_LIST
+
     return jsonify(response)
 
 
