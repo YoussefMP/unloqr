@@ -35,10 +35,7 @@ def handle_connect():
 @socketio.on("man_open_request")
 def handle_manual_access_request(data):
 
-    print("HELLO")
-
     password = data["password"]
-
     sid = request.sid
 
     admin = User.query.filter_by(id=1).first()
@@ -59,9 +56,12 @@ def handle_id_request(data):
     """
     device = Device.query.filter_by(dev_name=data['id']).first()
     if not device:
-        print("Welcoming new comer... ")
-        devices_list = db_man.data_base.session.query(Device.dev_name).all()
-        new_id = generate_dev_name(devices_list)
+        if data['id'] != "XXXX":
+            new_id = data['id']
+        else:
+            print("Welcoming new comer... ")
+            devices_list = db_man.data_base.session.query(Device.dev_name).all()
+            new_id = generate_dev_name(devices_list)
 
         new_dev = Device(dev_name=new_id)
         db_man.set_session_id(new_dev, request.sid)

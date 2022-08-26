@@ -45,6 +45,7 @@ class DBManager:
     ########################
     def add_user(self, new_user, device=None):
         try:
+            print("Adding new user to DB ...")
             self.data_base.session.add(new_user)
             if device:
                 device.allowed_users.append(new_user)

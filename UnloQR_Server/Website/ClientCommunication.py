@@ -107,11 +107,14 @@ def access_req():
         if check_password_hash(user.password, password):
             device = Device.query.filter_by(dev_name=dev_name).first()
 
-            allowed_user = False
-            for dev in user.allowed_devices:
-                if dev_name == dev.dev_name:
-                    allowed_user = True
-                    break
+            if user.id != 1:
+                allowed_user = False
+                for dev in user.allowed_devices:
+                    if dev_name == dev.dev_name:
+                        allowed_user = True
+                        break
+            else:
+                allowed_user = True
 
             if allowed_user:
                 sid = device.sid
