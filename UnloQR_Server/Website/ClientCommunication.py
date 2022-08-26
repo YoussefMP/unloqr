@@ -1,3 +1,5 @@
+import time
+
 from flask_cors import cross_origin
 from validate_email import validate_email
 from werkzeug.security import check_password_hash
@@ -145,6 +147,7 @@ def access_req():
                     while not ack:
                         print(f"Client acknowledged message --> {ack}")
                         socketio.emit("access_granted", response, room=sid)
+                        time.sleep(0.5)
                         attempt += 1
                         if attempt >= 10:
                             break
