@@ -16,16 +16,18 @@ client_comms = Blueprint("client_comms", __name__)
 def login_request():
 
     data = request.get_json()
-    email = data["email"]
+    email = data["email"].strip(" ")
+    print(f"email from request {email}")
     password = data["password"]
 
-    # print(f"login request from {email}")
-    # user = User.query.filter_by(email=email).first()
-    # print(f"old db query return {user}")
+    print(f"login request from {email}")
+    user = User.query.filter_by(email=email).first()
+    print(f"old db query return {user}")
 
     all_users = User.query.all()
     for user in all_users:
-        print(f"Comparing '{email}' of type {type(email)} to '{user.email}' of type {type(user.email)}... {email.strip() == user.email}")
+        print(f"Comparing '{email}' of type {type(email)} to '{user.email}'"
+              f" of type {type(user.email)}... {email.replace(' ', '') == user.email}")
         
         if email == user.email:
             break
@@ -33,12 +35,15 @@ def login_request():
 
     if user:
         uid = user.id
-        if check_password_hash(user.password, password):
-            msg.LOGIN_GRANTED.update({"UID": uid})
-            msg.LOGIN_GRANTED.update({"name": user.name})
-            response = msg.LOGIN_GRANTED
+        if password:
+            if check_password_hash(user.password, password):
+                msg.LOGIN_GRANTED.update({"UID": uid})
+                msg.LOGIN_GRANTED.update({"name": user.name})
+                response = msg.LOGIN_GRANTED
+            else:
+                response = msg.LOGIN_DENIED
         else:
-            response = msg.LOGIN_DENIED
+            response = msg.EMAIL_NOT_CONFIRMED
     else:
         response = msg.USER_DOESNT_EXIST
 
