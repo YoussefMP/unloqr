@@ -6,7 +6,7 @@ from . import db
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.DateTime(timezone=False), default=func.now())
-    activity = db.Column(db.String(50))
+    activity = db.Column(db.String(150))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     video = db.Column(db.String(350))
 
