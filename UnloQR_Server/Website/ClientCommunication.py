@@ -21,7 +21,9 @@ def login_request():
 
     print(f"login request from {email}")
     user = User.query.filter_by(email=email).first()
-    print(f"db query return {user}")
+    print(f"old db query return {user}")
+    user = User.query(User).filter(User.email == email).one()
+    print(f"new db query return {user}")
 
     if user:
         uid = user.id
@@ -176,7 +178,7 @@ def add_user():
 
     if request.method == "POST":
 
-        email = data["email"]
+        email = data["email"].lower()
         dev_name = data["dev_name"]
         print(f"addings user request user = {email} to device = {dev_name}")
 
