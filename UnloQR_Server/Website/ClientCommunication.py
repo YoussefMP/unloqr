@@ -150,7 +150,7 @@ def access_req():
     else:
         response = msg.USER_DOESNT_EXIST
 
-    print(f"Respose to access request ===> {response}")
+    print(f"Response to access request ===> {response}")
     return jsonify(response)
 
 
