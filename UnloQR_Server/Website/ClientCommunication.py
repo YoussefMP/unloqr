@@ -25,7 +25,7 @@ def login_request():
 
     all_users = User.query.all()
     for user in all_users:
-        print(f"Comparing '{email}' of type {type(email)} to '{user.email}' of type {type(user.email)}... {email == user.email}")
+        print(f"Comparing '{email}' of type {type(email)} to '{user.email}' of type {type(user.email)}... {email.strip() == user.email}")
         
         if email == user.email:
             break

@@ -15,8 +15,18 @@ def home():
         email = request.form.get("email")
         dev_name = request.form.get("dev_name")
 
+        all_users = User.query.all()
+        for user in all_users:
+            print(
+                f"Comparing '{email}' of type {type(email)} to '{user.email}' of type {type(user.email)}... {email.strip() == user.email}")
+
+            if email == user.email:
+                break
+            user = False
+
         device = Device.query.filter_by(dev_name=dev_name).first()
         user = User.query.filter_by(email=email).first()
+        print(f"User query returns None")
 
         if device:
             if not user:
