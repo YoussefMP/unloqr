@@ -100,13 +100,15 @@ def handle_file_upload(data):
         # path = f"./Website/static/uploads/{data['filename']}"
         # filename = f"static/uploads/{data['filename']}"
 
+    print(os.listdir("./UnloQR_Server/Website/static/uploads"))
     file = open(path, "wb")
     file.write(base64.decodebytes(data["file"]))
     file.close()
+    print("Should be done with file writing")
 
     user = User.query.filter_by(id=uid).first()
-    log_entry = Log(activity=f"Benutzer {user.id} ({user.name}) hat Zugang zu {dev_name}"
-                             f"angefordert => (Gewährt)",
+    log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name}"
+                             f"angefordert => (Gewaehrt)",
                     user_id=uid,
                     video=path)
     db_man.add_log(log_entry)

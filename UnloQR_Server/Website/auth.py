@@ -162,7 +162,7 @@ def video_viewer(log_id):
     dev_name_regex = re.compile(r"""(?P<uid>.*?)_(?P<dev>....)_(?P<date>.*?)\.(?:avi|mp4)""")
 
     log_entry = Log.query.filter_by(id=log_id).first()
-    vid_path = log_entry.video
+    vid_path = "/app/UnloQR_Server/Website/static/uploads/" + log_entry.video
 
     dev_name = dev_name_regex.match(vid_path).group("dev")
     date = dev_name_regex.match(vid_path).group("date")
