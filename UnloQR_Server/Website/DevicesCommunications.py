@@ -91,7 +91,7 @@ def handle_file_upload(data):
     if __DEBUG__:
         path = "./Website/static/uploads/amv.mp4"
     else:
-        path = str(Path(os.path.abspath(__file__)).parent) + "\\static\\uploads\\" + data["filename"]
+        path = str(Path(os.path.abspath(__file__)).parent) + "/static/uploads/" + data["filename"]
         print(path)
         print(f" Listing Path(os.path.abspath(__file__)).parent => {os.listdir(Path(os.path.abspath(__file__)).parent)}")
         print(f"Video path give = {path}")
