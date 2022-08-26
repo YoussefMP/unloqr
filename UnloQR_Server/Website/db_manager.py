@@ -45,10 +45,12 @@ class DBManager:
     ########################
     def add_user(self, new_user, device=None):
         try:
-            print("Adding new user to DB ...")
+            print(f"Adding new user to DB ...{new_user}")
             self.data_base.session.add(new_user)
             if device:
                 device.allowed_users.append(new_user)
+            print(f"Committing changes to the database ...")
+            self.data_base.session.flush
             self.data_base.session.commit()
         except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError as err:
             print(f"Error Message: {err}")

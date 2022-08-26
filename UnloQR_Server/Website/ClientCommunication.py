@@ -15,13 +15,14 @@ client_comms = Blueprint("client_comms", __name__)
 @cross_origin()
 def login_request():
 
-    # TODO: Logging
-
     data = request.get_json()
     email = data["email"]
     password = data["password"]
 
+    print(f"login request from {email}")
     user = User.query.filter_by(email=email).first()
+    print(f"db query return {user}")
+
     if user:
         uid = user.id
         if check_password_hash(user.password, password):
@@ -118,11 +119,13 @@ def access_req():
 
             if allowed_user:
                 sid = device.sid
+                print(f"Got device {device.dev_name} with sid ={sid}")
                 if sid:
                     msg.ACCESS_GRANTED.update({"uid": user.id})
                     msg.ACCESS_GRANTED.update({"did": dev_name})
                     msg.ACCESS_GRANTED.update({"date": date_str})
                     response = msg.ACCESS_GRANTED
+                    print(f"Emitting access granted to Device")
                     socketio.emit("access_granted", response, room=sid)
 
                 else:
@@ -169,10 +172,12 @@ def add_user():
 
         email = data["email"]
         dev_name = data["dev_name"]
+        print(f"addings user request user = {email} to device = {dev_name}")
 
         device = Device.query.filter_by(dev_name=dev_name).first()
         user = User.query.filter_by(email=email).first()
 
+        print("checkking email validity")
         if not validate_email(email):
             response = msg.NOT_VALID_EMAIL
             return jsonify(response)
