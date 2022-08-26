@@ -142,11 +142,13 @@ def access_req():
                     response = msg.ACCESS_GRANTED
                     print(f"Emitting access granted to Device")
                     attempt = 0
+                    print(f"Client acknowledged message --> {ack}")
                     while not ack:
                         socketio.emit("access_granted", response, room=sid)
                         attempt += 1
                         if attempt >= 10:
                             break
+                    ack = False
                 else:
                     response = msg.DEVICE_OFFLINE
             else:
