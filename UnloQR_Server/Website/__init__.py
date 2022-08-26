@@ -16,6 +16,8 @@ db = db_man.data_base
 socketio = None
 app = None
 
+ack = False
+
 
 def create_app(__local__):
     global app

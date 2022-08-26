@@ -129,6 +129,10 @@ def handle_disconnect(data):
     print("session Id was nullified")
 
 
+@socketio.on("received")
+def client_ack():
+    from . import ack
+    ack = True
 
 
 

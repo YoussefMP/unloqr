@@ -134,13 +134,19 @@ def access_req():
                 sid = device.sid
                 print(f"Got device {device.dev_name} with sid ={sid}")
                 if sid:
+
+                    from . import ack
                     msg.ACCESS_GRANTED.update({"uid": user.id})
                     msg.ACCESS_GRANTED.update({"did": dev_name})
                     msg.ACCESS_GRANTED.update({"date": date_str})
                     response = msg.ACCESS_GRANTED
                     print(f"Emitting access granted to Device")
-                    socketio.emit("access_granted", response, room=sid)
-
+                    attempt = 0
+                    while not ack:
+                        socketio.emit("access_granted", response, room=sid)
+                        attempt += 1
+                        if attempt >= 10:
+                            break
                 else:
                     response = msg.DEVICE_OFFLINE
             else:
