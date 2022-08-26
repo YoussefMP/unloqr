@@ -18,7 +18,8 @@ class Client:
 
         set_c_man(self.c_man)
         set_client(self)
-        
+
+    def connect_to_server(self):
         print("Connecting to server...")
         tries = 0
         while tries < 10:
@@ -27,12 +28,13 @@ class Client:
                 client.connect(self.server_url, wait_timeout=15)
                 break
             except ConnectionError:
-                print("Caught Connection Error 1")
+                print("Caught Connection Error 1, retrying... ")
                 time.sleep(1)
             except Exception as err:
-                print(f"Sleeping in the finally because of {err}")
-                print("___________________________________________")
+                print(f"Sleeping in the finally because of {err} \n Retrying ...")
                 time.sleep(2)
+
+        print("Connected_or_not")
 
     @client.event
     def request_id(self):

@@ -6,14 +6,29 @@ from os import path
 import time
 import urllib.request
 from threading import Thread
+import socket
 
 
-def is_connected(host='http://google.com'):
+def is_connected2(host='http://google.com'):
     try:
-        urllib.request.urlopen(host)
+        print(urllib.request.urlopen(host))
         return True
     except Exception as err:
+        print(err)
         return False
+
+
+def is_connected(timeout=2):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(timeout)
+    try:
+        s.connect(("http://google.com", 80))
+        s.shutdown(socket.SHUT_RDWR)
+        return True
+    except:
+        return False
+    finally:
+        s.close()
 
 
 class GUIManager:
@@ -47,7 +62,7 @@ class GUIManager:
         self.wifi_label.configure(bg="white")
         self.wifi_label.grid(row=0, column=5, sticky="NE")
 
-        connection_status_thread = Thread(target=self.update_status())
+        connection_status_thread = Thread(target=self.update_status)
         connection_status_thread.start()
 
         gear_icon = ImageTk.PhotoImage(Image.open("./static/GearIcon80.png"))
@@ -116,7 +131,7 @@ class GUIManager:
         self.win.update()
 
     def update_status(self):
-        connection_status_update = self.window.after(2500, self.update_status)
+        connection_status_update = self.window.after(3500, self.update_status)
         if is_connected():
             self.icon = Image.open("./static/WiFiIcon.png")
             self.wifi_label.grid(pady=(0, 0), padx=(0, 0))
@@ -133,9 +148,11 @@ class GUIManager:
     def update_id_label(self):
         update_id_label = self.window.after(2000, self.update_id_label)
 
+        print("Hello from id label")
         did = self.client.c_man.get_my_id()
         if did != "XXXX":
             self.client.did = did
             self.id_text.set(did)
             self.window.update_idletasks()
             self.window.after_cancel(update_id_label)
+
