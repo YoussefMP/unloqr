@@ -43,7 +43,7 @@ def handle_manual_access_request(data):
     if check_password_hash(admin.password, password):
         print("OK")
         response = {"ID": 140, "text": "Access granted", "uid": -1, "did": "did", "date": "date"}
-        socketio.emit("access_granted", response, room=sid)
+        socketio.emit("access_granted", response, namespace="/main", room=sid)
     else:
         print("NOT OK")
 
@@ -68,12 +68,12 @@ def handle_id_request(data):
         db_man.add_device(new_dev)
 
         response = compose_new_id_msg(new_id)
-        socketio.emit("set_ID", response, room=request.sid)
+        socketio.emit("set_ID", response, namespace="/main", room=request.sid)
 
     else:
         db_man.set_session_id(device, request.sid)
         response = compose_hello_msg()
-        socketio.emit("hello", response, room=request.sid)
+        socketio.emit("hello", response, namespace="/main", room=request.sid)
 
 
 @socketio.on("file_upload")
