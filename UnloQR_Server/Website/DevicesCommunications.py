@@ -70,7 +70,7 @@ def handle_id_request(data):
         response = compose_new_id_msg(new_id)
         print(f"compiling ID for the device")
         socketio.emit("set_ID", response, room=request.sid)
-        print(f"emitting response = {response}")
+        print(f"emitting response       = {response}")
 
     else:
         db_man.set_session_id(device, request.sid)
@@ -109,10 +109,10 @@ def handle_file_upload(data):
     print("Should be done with file writing")
 
     user = User.query.filter_by(id=uid).first()
-    log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name}"
+    log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name} "
                              f"angefordert => (Gewaehrt)",
                     user_id=uid,
-                    video=path)
+                    video=data["filename"])
     db_man.add_log(log_entry)
 
     print("File Got")
