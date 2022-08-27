@@ -248,8 +248,13 @@ def delete_user():
 def say_hi():
     data = request.get_json()
     dev = data["device"]
+    dev2 = dev.replace(" ", "")
+    devices = Device.query.all()
 
-    device = Device.query.filter_by(dev_name=dev).first()
+    for device in devices:
+        if dev == device.dev_name or device.dev_name == dev2:
+            print(f"found device with id '{dev}'")
+            break
 
     print(f"getting device sid = {device.sid}")
     sid = device.sid
