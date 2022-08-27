@@ -109,10 +109,13 @@ def handle_file_upload(data):
     print("Should be done with file writing")
 
     user = User.query.filter_by(id=uid).first()
-    log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name} "
-                             f"angefordert => (Gewaehrt)",
+    # log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name} "
+    #                          f"angefordert => (Gewaehrt)",
+    #                 user_id=uid,
+    #                 video=data["filename"])
+    log_entry = Log(activity=f"hello",
                     user_id=uid,
-                    video=data["filename"])
+                    video="metoo")
     db_man.add_log(log_entry)
 
     print("File Got")
