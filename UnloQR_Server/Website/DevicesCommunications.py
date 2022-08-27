@@ -131,7 +131,7 @@ def handle_disconnect(data):
 
 @socketio.on("received")
 def client_ack():
-    print(f"Received ACK from device")
+    print(f" ________________ Received ACK from device _______________________ ")
     from . import ack
     ack = True
 

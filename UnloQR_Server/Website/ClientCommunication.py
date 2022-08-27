@@ -137,23 +137,13 @@ def access_req():
                 print(f"Got device {device.dev_name} with sid ={sid}")
                 if sid:
 
-                    from . import ack
                     msg.ACCESS_GRANTED.update({"uid": user.id})
                     msg.ACCESS_GRANTED.update({"did": dev_name})
                     msg.ACCESS_GRANTED.update({"date": date_str})
                     response = msg.ACCESS_GRANTED
                     print(f"Emitting access granted to Device")
-                    attempt = 0
-                    while not ack:
-                        print(f"Client acknowledged message --> {ack}")
-                        socketio.emit("access_granted", response, room=sid)
-                        time.sleep(1)
-                        attempt += 1
-                        if attempt >= 10:
-                            break
-                        if not ack:
-                            socketio.emit("hello", {"ID": 20, "text": "hello"}, room=sid)
-                    ack = False
+                    socketio.emit("access_granted", response, room=sid)
+
                 else:
                     response = msg.DEVICE_OFFLINE
             else:
@@ -253,3 +243,17 @@ def delete_user():
     return jsonify(response)
 
 
+@client_comms.route("/say_hi", methods=["POST"])
+@cross_origin()
+def say_hi():
+    data = request.get_json()
+    dev = data["device"]
+
+    device = Device.query.filter_by(dev_name=dev).first()
+
+    print(f"getting device sid = {device.sid}")
+    sid = device.sid
+    if sid:
+        print(f"Emitting access granted to Device")
+        socketio.emit("access_granted", {"ID": 10, "text": "test"}, room=sid)
+        print(f"finished emitting")
