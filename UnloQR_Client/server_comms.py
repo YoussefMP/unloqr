@@ -1,3 +1,4 @@
+import os
 import threading
 from ServerMsgHandler import response_ids, set_c_man, set_client
 from Client_FileIO import ConfigManager
@@ -134,10 +135,9 @@ def get_id(data):
 
     print("Returned form handling event")
     
-    
 
 @client.on("access_granted")
-def get_id(data):
+def grant_access(data):
     """
     This function calls the FileIO to set up the config file on receiving new_id.
     :param
@@ -163,7 +163,13 @@ def get_id(data):
     
     print("Returned form handling event")
                 
-    
+
+@client.on("file_got")
+def delete_file(filename):
+    print("Deleting video from local folder")
+    path = f"./static/{filename}"
+    os.remove(path)
+    print("Vid deleted")
 
 
 def open_com_chanel(cl):
