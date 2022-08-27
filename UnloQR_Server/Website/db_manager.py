@@ -79,8 +79,10 @@ class DBManager:
     #######################
     def add_log(self, log_entry):
         try:
+            print(f"Adding log entry to user {log_entry.user_id}")
             self.data_base.session.add(log_entry)
             self.data_base.session.commit()
+            print("log added")
         except sqlite3.IntegrityError or sqlalchemy.exc.IntegrityError as i_err:
             print(f"Integrity error: {i_err}")
 

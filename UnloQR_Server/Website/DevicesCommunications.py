@@ -106,6 +106,11 @@ def handle_file_upload(data):
     file = open(path, "wb")
     file.write(base64.decodebytes(data["file"]))
     file.close()
+
+    file = open(path, "rb")
+    for l in file.readlines():
+        print(f"____{l}")
+
     print("Should be done with file writing")
 
     user = User.query.filter_by(id=uid).first()
