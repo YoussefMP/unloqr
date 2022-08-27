@@ -9,6 +9,7 @@ class Log(db.Model):
     activity = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     video = db.Column(db.String)
+    video_file = db.Column(db.LargeBinary)
 
 
 user_device = db.Table("user_device",

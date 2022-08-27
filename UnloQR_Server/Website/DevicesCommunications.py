@@ -98,30 +98,22 @@ def handle_file_upload(data):
         print(f" Listing Path(os.path.abspath(__file__)).parent => {os.listdir(Path(os.path.abspath(__file__)).parent)}")
         print(f"Video path give = {path}")
 
-        # for testing
-        # path = f"./Website/static/uploads/{data['filename']}"
-        # filename = f"static/uploads/{data['filename']}"
-
     print(os.listdir("./UnloQR_Server/Website/static/uploads"))
-    file = open(path, "wb")
-    file.write(base64.decodebytes(data["file"]))
-    file.close()
-
-    file = open(path, "rb")
-    for l in file.readlines():
-        print(f"____{l}")
-
+    print("_______________________________")
+    print(data["file"][:500])
+    print("_______________________________")
+    with open(path, "wb") as vid:
+        vid.write(base64.decodebytes(data["file"]))
+    vid.close()
     print("Should be done with file writing")
 
     user = User.query.filter_by(id=uid).first()
-    # log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name} "
-    #                          f"angefordert => (Gewaehrt)",
-    #                 user_id=uid,
-    #                 video=data["filename"])
-    log_entry = Log(activity=f"hello",
-                    user_id=uid,
-                    video="metoo")
-    db_man.add_log(log_entry)
+    if uid != 1:
+        log_entry = Log(activity=f"Benutzer {user.name} hat Zugang zu {dev_name} angefordert (Gewaehrt)",
+                        user_id=uid,
+                        video=data["filename"],
+                        video_file=data["file"])
+        db_man.add_log(log_entry)
 
     print("File Got")
 
