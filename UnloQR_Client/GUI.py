@@ -9,7 +9,13 @@ from urllib.request import HTTPError, URLError
 from threading import Thread
 import socket
 from socket import timeout
-
+try:
+    import RPi.GPIO as GPIO
+    __raspberry__ = True
+    print(f"RPi correctly imported")
+except ModuleNotFoundError:
+    __raspberry__ = False
+    print("problem while importing RPi")
 
 def is_connected(host='http://google.com'):
     try:
@@ -68,11 +74,16 @@ class GUIManager:
         man_open_btn = Button(main_frame, image=gear_icon, command=self.open_manually)
         man_open_btn.configure(bg="white")
         man_open_btn.grid(row=0, column=4, pady=(20, 0), sticky="NE")
-
-        Grid.columnconfigure(main_frame, 3, weight=1)
+        
+        Grid.columnconfigure(main_frame, 2, weight=1)
         
         while not path.exists("./_Config/ID_Code.png"):
             time.sleep(2)
+
+        lock_icon = ImageTk.PhotoImage(Image.open("./static/LockIconFull80.png"))
+        close_btn = Button(mid_frame, image=lock_icon, command=self.close_lock)
+        close_btn.configure(bg="white")
+        close_btn.pack(pady=(0, 35))
 
         img = Image.open("./_Config/ID_Code.png")
         photo = ImageTk.PhotoImage(img)
@@ -88,7 +99,7 @@ class GUIManager:
         id_update = Thread(target=self.update_id_label())
 
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
-        # self.window.attributes("-fullscreen", True)
+        #self.window.attributes("-fullscreen", True)
 
         self.window.geometry("800x600")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -157,3 +168,8 @@ class GUIManager:
             self.window.update_idletasks()
             self.window.after_cancel(update_id_label)
 
+    def close_lock(self):
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(13, GPIO.OUT)
+        GPIO.output(13, 0)

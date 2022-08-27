@@ -2,6 +2,7 @@ import os
 import time
 from datetime import datetime
 import cv2
+from threading import Thread
 try:
     import RPi.GPIO as GPIO
     __raspberry__ = True
@@ -14,6 +15,7 @@ except ModuleNotFoundError:
 c_man = None
 client_obj = None
 
+time_of_open = 0
 
 def set_c_man(config_manager):
     global c_man
@@ -112,9 +114,24 @@ def open_lock():
     GPIO.setup(13, GPIO.OUT)
 
     GPIO.output(13, 1)
-    time.sleep(5)
-    GPIO.output(13, 0)
+    
+    lock_timer = Thread(target=lambda: start_counter(datetime.now()))
+    lock_timer.start()
 
+def start_counter(start):
+    
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(13, GPIO.OUT)
+    while True:
+        now = datetime.now()
+        
+        if (now-start).seconds > 300:
+            
+            GPIO.output(13, 0)
+        else:
+            time.sleep(5)
+    
 
 # ######################################################### #
 # ############ Main response handling methods ############# #

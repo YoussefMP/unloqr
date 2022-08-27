@@ -7,6 +7,14 @@ import base64
 import time
 from flask import jsonify
 
+try:
+    import RPi.GPIO as GPIO
+    __raspberry__ = True
+    print(f"RPi correctly imported")
+except ModuleNotFoundError:
+    __raspberry__ = False
+    print("problem while importing RPi")
+
 client = socketio.Client()
 
 
@@ -72,6 +80,10 @@ class Client:
 
     @client.event
     def on_disconnect(self):
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(13, GPIO.OUT)
+        GPIO.output(13, 0)
         temp_id = self.did
         data = {"id": temp_id}
         client.emit("exit", data=data)
@@ -165,9 +177,9 @@ def grant_access(data):
                 
 
 @client.on("file_got")
-def delete_file(filename):
+def delete_file(data):
     print("Deleting video from local folder")
-    path = f"./static/{filename}"
+    path = f"./static/{data[filename]}"
     os.remove(path)
     print("Vid deleted")
 
