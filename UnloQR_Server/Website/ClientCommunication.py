@@ -142,7 +142,7 @@ def access_req():
                     msg.ACCESS_GRANTED.update({"date": date_str})
                     response = msg.ACCESS_GRANTED
                     print(f"Emitting access granted to Device")
-                    socketio.emit("access_granted", response, namespace="/access", room=sid)
+                    socketio.emit("access_granted", response, room=sid)
 
                 else:
                     response = msg.DEVICE_OFFLINE
@@ -260,7 +260,7 @@ def say_hi():
     sid = device.sid
     if sid:
         print(f"Emitting access granted to Device")
-        socketio.emit("access_granted", {"ID": 10, "text": "test"}, namespace="/main", room=sid)
+        socketio.emit("access_granted", {"ID": 10, "text": "test"}, room=sid)
         print(f"finished emitting")
 
     return jsonify({"ID": 10, "text": "test"})
