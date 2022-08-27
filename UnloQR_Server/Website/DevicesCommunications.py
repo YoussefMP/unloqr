@@ -68,7 +68,9 @@ def handle_id_request(data):
         db_man.add_device(new_dev)
 
         response = compose_new_id_msg(new_id)
+        print(f"compiling ID for the device")
         socketio.emit("set_ID", response, room=request.sid)
+        print(f"emitting response = {response}")
 
     else:
         db_man.set_session_id(device, request.sid)
