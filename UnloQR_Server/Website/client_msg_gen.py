@@ -35,8 +35,8 @@ def compose_mail(sender, receiver, token, route):
 
 
 def send_confirmation_email(email, route):
-    gmail_user = "ameuryoussef94@gmail.com"
-    gmail_app_password = "bkqcnclgwdfqpsug"
+    gmail_user = "unloqr.bot@gmail.com"
+    gmail_app_password = "iwlvtidzuynpllwc"
 
     token = gen_token(email)
 

@@ -22,6 +22,7 @@ ACCESS_GRANTED = {"ID": 140, "text": "Zugang gewährt", "uid": "uid", "did": "di
 ACESS_DENIED = {"ID": 141, "text": "Zugang verweigert"}
 DENIED_ON_DEVICE = {"ID": 143, "text": "Sie sind für dieses Gerät nicht zugelassen"}
 DEVICE_OFFLINE = {"ID": 145, "text": "Gerät ist offline"}
+FILE_GOT = {"ID": 146, "text": "File Got"}
 
 # Admin request messages
 USERS_LIST = {"ID": 150, "users": "users"}

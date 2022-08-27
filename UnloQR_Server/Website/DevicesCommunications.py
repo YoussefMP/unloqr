@@ -115,6 +115,9 @@ def handle_file_upload(data):
                         video_file=data["file"])
         db_man.add_log(log_entry)
 
+    response = compose_file_got()
+    socketio.emit("file_got", response, room=request.sid)
+
     print("File Got")
 
 
