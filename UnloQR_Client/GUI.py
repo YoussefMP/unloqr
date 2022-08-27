@@ -5,17 +5,28 @@ from PIL import Image, ImageTk
 from os import path
 import time
 import urllib.request
+from urllib.request import HTTPError, URLError
 from threading import Thread
 import socket
+from socket import timeout
 
 
-def is_connected(host='http://unloqr.herokuapp.com'):
+def is_connected(host='http://google.com'):
     try:
-        print(urllib.request.urlopen(host))
-        return True
-    except Exception as err:
+        if urllib.request.urlopen(host, timeout=3).msg == "OK":
+            return True
+        else:
+            return False
+    except HTTPError as err:
+        print("In Exception")
         print(err)
         return False
+    except URLError as err:
+        print("In url Exception")
+        print(err)
+        return False
+    print("OUT")
+    return False
 
 
 
@@ -79,8 +90,7 @@ class GUIManager:
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
         # self.window.attributes("-fullscreen", True)
 
-#        self.window.geometry("600x400")
-        self.window.state("zoomed")
+        self.window.geometry("800x600")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.window.configure(bg="white")
         self.window.mainloop()
@@ -120,11 +130,13 @@ class GUIManager:
         self.win.update()
 
     def update_status(self):
-        connection_status_update = self.window.after(3500, self.update_status)
+        connection_status_update = self.window.after(5000, self.update_status)
         if is_connected():
+            print("Update to Connected")
             self.icon = Image.open("./static/WiFiIcon.png")
             self.wifi_label.grid(pady=(0, 0), padx=(0, 0))
         else:
+            print("UPDATE TO DISCONNECTED")
             self.icon = Image.open("./static/NoInternetIcon.png")
             self.wifi_label.grid(pady=(10, 0), padx=(10, 0))
 

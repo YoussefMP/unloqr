@@ -1,6 +1,7 @@
 from server_comms import Client
 from GUI import GUIManager
 from threading import Thread
+from PIL import Image, ImageTk
 
 
 if __name__ == "__main__":
