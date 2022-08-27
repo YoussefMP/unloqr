@@ -9,7 +9,7 @@ from threading import Thread
 import socket
 
 
-def is_connected2(host='http://google.com'):
+def is_connected(host='http://unloqr.herokuapp.com'):
     try:
         print(urllib.request.urlopen(host))
         return True
@@ -17,18 +17,6 @@ def is_connected2(host='http://google.com'):
         print(err)
         return False
 
-
-def is_connected(timeout=2):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(timeout)
-    try:
-        s.connect(("http://google.com", 80))
-        s.shutdown(socket.SHUT_RDWR)
-        return True
-    except:
-        return False
-    finally:
-        s.close()
 
 
 class GUIManager:
@@ -91,7 +79,8 @@ class GUIManager:
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
         # self.window.attributes("-fullscreen", True)
 
-        self.window.geometry("600x400")
+#        self.window.geometry("600x400")
+        self.window.state("zoomed")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.window.configure(bg="white")
         self.window.mainloop()
@@ -117,8 +106,8 @@ class GUIManager:
         password_label = Label(self.win, text="Admin Passwort:")
         password_label.grid(row=0, column=0, padx=(5, 5))
     
-        password_txt = StringVar()
-        password_box = Entry(self.win, textvariable=password_txt, show="*")
+        self.password_txt = StringVar()
+        password_box = Entry(self.win, textvariable=self.password_txt, show="*")
         password_box.grid(row=0, column=1, padx=(0, 5))
         Grid.columnconfigure(self.win, 1, weight=1)
         

@@ -62,7 +62,7 @@ def get_video_type(filename):
     filename, ext = os.path.splitext(filename)
     if ext in VIDEO_TYPE:
         return VIDEO_TYPE[ext]
-    return VIDEO_TYPE["mp4"]
+    return VIDEO_TYPE["avi"]
 
 
 def record_video(file_path):
@@ -85,7 +85,9 @@ def record_video(file_path):
         ret, frame = cap.read()
         out.write(frame)
         try:
-            cv2.imshow('frame', frame)
+            ret, buffer = cv2.imencode('.jpeg', frame)
+            frame = buffer.tobytes()
+            # cv2.imshow('frame', frame)
         except:
             break
 
@@ -133,27 +135,32 @@ def grant_access(response):
     :param response:
     :return:
     """
+    if response["ID"] == 10:
+        print("GOT THE TEST EMIT")
+        return
+    
     print(f"response = {response}")
     uid = response["uid"]
     did = response["did"]
     date = response["date"]
     
+    print(f"User Id requesting access is {uid}")
+    
     if uid != -1:
-        filename = f"{uid}_{did}_{date}.mp4"
+        filename = f"{uid}_{did}_{date}.avi"
         filepath = f"./static/{filename}"
 
         # TODO Uncomment and test when camera is here
         record_video(filepath)
 
-        # filepath = "./static/AMV.mp4"
-
     else:
-        time.sleep(2)
+        time.sleep(1)
 
     if __raspberry__:
         open_lock()
-
-    client_obj.upload_file(filepath, filename)
+    
+    if uid != -1:
+        client_obj.upload_file(filepath, filename)
 
 
 # Dictionary containing the mapping of the response methods to the server msgs

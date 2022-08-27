@@ -78,22 +78,92 @@ class Client:
         client.disconnect()
 
 
-@client.on("*")
-def get_id(event, data=None):
+@client.on("hello")
+def get_id(event, data={"None": "None"}):
     """
     This function calls the FileIO to set up the config file on receiving new_id.
     :param
     event:
     data: response received from the server
     """
-    print("Received EVENT")
+    print("Received EVENT hello")
+
+    try:
+        client.emit("received")
+    except:
+        print("could not send ack")
+    
+    try:
+        if data is None:
+            receiver_thread = threading.Thread(target=response_ids["hello"])
+        else:
+            receiver_thread = threading.Thread(target=response_ids["hello"](data))
+
+        receiver_thread.start()
+        receiver_thread.join()
+    except Exception as err:
+        print(f"Unexpected error occured {err}")
+    
+    print("Returned form handling event")
+
+
+@client.on("set_ID")
+def get_id(data):
+    """
+    This function calls the FileIO to set up the config file on receiving new_id.
+    :param
+    event:
+    data: response received from the server
+    """
+    print("Received EVENT set_id")
+
+    try:
+        client.emit("received")
+    except:
+        print("could not send ack")
+
+    print(data)
+
     if data is None:
-        receiver_thread = threading.Thread(target=response_ids[event])
+        receiver_thread = threading.Thread(target=response_ids["hello"])
     else:
-        receiver_thread = threading.Thread(target=response_ids[event](data))
+        receiver_thread = threading.Thread(target=response_ids["set_ID"](data))
 
     receiver_thread.start()
     receiver_thread.join()
+
+    print("Returned form handling event")
+    
+    
+
+@client.on("access_granted")
+def get_id(data):
+    """
+    This function calls the FileIO to set up the config file on receiving new_id.
+    :param
+    event:
+    data: response received from the server
+    """
+    print("Received EVENT access granted")
+
+    try:
+        client.emit("received")
+    except:
+        print("could not send ack")
+    
+    print("___________ {data} _________")
+    
+    try:
+        receiver_thread = threading.Thread(target=response_ids["access_granted"](data))
+
+        receiver_thread.start()
+        receiver_thread.join()
+    except Exception as err:
+        print(f"Unexpected error occured {err}")
+    
+    print("Returned form handling event")
+                
+    
 
 
 def open_com_chanel(cl):
