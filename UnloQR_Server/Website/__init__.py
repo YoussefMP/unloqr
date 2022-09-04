@@ -15,7 +15,6 @@ db_man = DBManager("database.db")
 db = db_man.data_base
 socketio = None
 app = None
-
 ack = False
 
 
@@ -57,16 +56,17 @@ def create_app(__local__):
     app.register_blueprint(client_comms, url_prefix="/")
 
     from .models import User, Log, Device
-    # with app.app_context():
-    #     try:
-    #         db_man.create_database(app, force=False)
-    #     except Exception as err:
-    #         print(f"=========> {err} <===========")
-    #
-    #     try:
-    #         db_man.add_admin()
-    #     except Exception as err:
-    #         print(f"---------------- {err} ---------------")
+    if __local__:
+        with app.app_context():
+            try:
+                db_man.create_database(app, force=False)
+            except Exception as err:
+                print(f"=========> {err} <===========")
+
+            try:
+                db_man.add_admin()
+            except Exception as err:
+                print(f"---------------- {err} ---------------")
 
     @click.command(name="create_tables")
     @with_appcontext

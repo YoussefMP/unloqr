@@ -1,4 +1,7 @@
+import base64
 import os
+import tempfile
+from pathlib import Path
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
 from flask_login import login_user, login_required, logout_user, current_user
@@ -132,8 +135,16 @@ def delete_user_with_id(uid):
 
 # _________________ Video Handling _________________
 def generate_frames(path):
+    global vid_bytes
+
     print(path)
     print(f"Video existence => {os.path.exists(path)}")
+    path += "tempVid.avi"
+
+    with open(path, "wb") as tv:
+        tv.write(base64.b64decode(vid_bytes))
+    tv.close()
+
     cap = cv2.VideoCapture(path)
 
     while cap.isOpened():
@@ -149,23 +160,27 @@ def generate_frames(path):
 
     cap.release()
     cv2.destroyAllWindows()
+    os.remove(path)
 
 
 vid_path = ""
+vid_bytes = ""
 
 
 @auth.route("/video/<log_id>", methods=["GET"])
 def video_viewer(log_id):
     import re
     global vid_path
+    global vid_bytes
 
     dev_name_regex = re.compile(r"""(?P<uid>.*?)_(?P<dev>....)_(?P<date>.*?)\.(?:avi|mp4)""")
 
     log_entry = Log.query.filter_by(id=log_id).first()
-    vid_path = "/app/UnloQR_Server/Website/static/uploads/" + log_entry.video
+    vid_path = "/app/UnloQR_Server/Website/static/uploads/"
+    vid_bytes = log_entry.video_file
 
-    dev_name = dev_name_regex.match(vid_path).group("dev")
-    date = dev_name_regex.match(vid_path).group("date")
+    dev_name = dev_name_regex.match(log_entry.video).group("dev")
+    date = dev_name_regex.match(log_entry.video).group("date")
     date = f"{date[:2]}-{date[2:4]}-{date[4:8]}.{date[8:10]}:{date[10:12]}:{date[12:14]}"
 
     request_sender = User.query.filter_by(id=log_entry.user_id).first()
@@ -176,9 +191,8 @@ def video_viewer(log_id):
 
 @auth.route("/Vid_log")
 def open_vid_modal():
-
     global vid_path
-    # vid_path = str(Path(os.path.abspath(__file__)).parent) + vid_path[1:].replace("/", "\\")
     return Response(generate_frames(vid_path), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 
