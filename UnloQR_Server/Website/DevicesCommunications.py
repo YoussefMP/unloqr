@@ -98,7 +98,7 @@ def handle_file_upload(data):
         print(f" Listing Path(os.path.abspath(__file__)).parent => {os.listdir(Path(os.path.abspath(__file__)).parent)}")
         print(f"Video path give = {path}")
 
-    print(os.listdir("./UnloQR_Server/Website/static/uploads"))
+    # print(os.listdir("./UnloQR_Server/Website/static/uploads"))
     print("_______________________________")
     print(data["file"][:500])
     print("_______________________________")
@@ -121,6 +121,11 @@ def handle_file_upload(data):
     print("File Got")
 
 
+@socketio.on("connected?")
+def response():
+    socketio.emit("yes", room=request.sid)
+
+
 @socketio.on("exit")
 def handle_disconnect(data):
     print(f"Device with ID {data['id']} was disconnected")
@@ -139,6 +144,4 @@ def client_ack():
     print(f" ________________ Received ACK from device _______________________ ")
     from . import ack
     ack = True
-
-
 
