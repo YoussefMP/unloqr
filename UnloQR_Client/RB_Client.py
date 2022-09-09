@@ -1,3 +1,4 @@
+#! /usr/bin/python
 from server_comms import Client
 from GUI import GUIManager
 from threading import Thread

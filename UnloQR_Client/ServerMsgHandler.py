@@ -75,7 +75,7 @@ def record_video(file_path):
     """
     frames_per_second = 24.0
     res = "480p"
-
+    
     cap = cv2.VideoCapture(0)
     dims = set_res(cap, res=res)
     video_type = get_video_type(file_path[file_path.rfind("/") + 1:])
@@ -137,13 +137,14 @@ def start_counter(start):
 # ############ Main response handling methods ############# #
 # ######################################################### #
 def read_msg(response):
-    print(response["message"])
+    print(response)
 
 
 def set_id(response):
     response = dict(response)
     new_id = response["idx"]
     c_man.initialize_config_file(new_id)
+
 
 
 def grant_access(response):
@@ -163,22 +164,30 @@ def grant_access(response):
     
     print(f"User Id requesting access is {uid}")
     
-    if uid != -1:
-        filename = f"{uid}_{did}_{date}.avi"
-        filepath = f"./static/{filename}"
 
-        # TODO Uncomment and test when camera is here
+    if uid != 1:
+        client_obj.server_ans = "Für's Camera lächeln =)"
+        filename = f"{uid}_{did}_{date}.avi"
+        filepath = f"home/pi/Desktop/unloqr/UnloQR_Client/static/uploads/{filename}"
+        
+
+        print("\t\t call record video")
         record_video(filepath)
+        print("\t\t return after video finished recording")
 
     else:
         time.sleep(1)
-
-    if __raspberry__:
-        open_lock()
     
-    if uid != -1:
+    if __raspberry__:
+        print("\t\t opening lock")
+        open_lock()
+        client_obj.server_ans = "Gehen sie bitte durch"
+        print("\t\t done opening lock")
+    
+    if uid != 1:
+        print("\t\tStarting file upload to server")
         client_obj.upload_file(filepath, filename)
-
+        print("\t\t Done uploading")
 
 # Dictionary containing the mapping of the response methods to the server msgs
 response_ids = {
@@ -186,3 +195,6 @@ response_ids = {
     "set_ID": set_id,
     "access_granted": grant_access
 }
+
+def check_comms():
+    client_obj.check_connection()

@@ -1,39 +1,31 @@
 from tkinter import Tk, Label, Frame, Button, Grid, Toplevel, StringVar, Entry
-
 import socketio.exceptions
-from PIL import Image, ImageTk
 from os import path
 import time
-import urllib.request
-from urllib.request import HTTPError, URLError
+import http.client as httplib
 from threading import Thread
-import socket
-from socket import timeout
+import psutil
+import os
 try:
     import RPi.GPIO as GPIO
     __raspberry__ = True
-    print(f"RPi correctly imported")
+    print("RPi correctly imported")
 except ModuleNotFoundError:
     __raspberry__ = False
     print("problem while importing RPi")
+from PIL import Image, ImageTk
 
-def is_connected(host='http://google.com'):
+break_all = False
+
+def is_connected():
+    conn = httplib.HTTPSConnection("8888.google", timeout=5)
     try:
-        if urllib.request.urlopen(host, timeout=3).msg == "OK":
-            return True
-        else:
-            return False
-    except HTTPError as err:
-        print("In Exception")
-        print(err)
+        conn.request("HEAD", "/")
+        return True
+    except Exception:
         return False
-    except URLError as err:
-        print("In url Exception")
-        print(err)
-        return False
-    print("OUT")
-    return False
-
+    finally:
+        conn.close()
 
 
 class GUIManager:
@@ -48,9 +40,9 @@ class GUIManager:
         main_frame.configure(bg="white")
 
         if is_connected():
-            self.icon = Image.open("./static/WiFiIcon.png")
+            self.icon = Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/static/WiFiIcon.png")
         else:
-            self.icon = Image.open("./static/NoInternetIcon.png")
+            self.icon = Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/static/NoInternetIcon.png")
 
         mid_frame = Frame(main_frame)
         mid_frame.grid(row=2, column=1)
@@ -70,22 +62,22 @@ class GUIManager:
         connection_status_thread = Thread(target=self.update_status)
         connection_status_thread.start()
 
-        gear_icon = ImageTk.PhotoImage(Image.open("./static/GearIcon80.png"))
+        gear_icon = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/static/GearIcon80.png"))
         man_open_btn = Button(main_frame, image=gear_icon, command=self.open_manually)
         man_open_btn.configure(bg="white")
         man_open_btn.grid(row=0, column=4, pady=(20, 0), sticky="NE")
         
         Grid.columnconfigure(main_frame, 2, weight=1)
         
-        while not path.exists("./_Config/ID_Code.png"):
+        while not path.exists("/home/pi/Desktop/unloqr/UnloQR_Client/_Config/ID_Code.png"):
             time.sleep(2)
 
-        lock_icon = ImageTk.PhotoImage(Image.open("./static/LockIconFull80.png"))
+        lock_icon = ImageTk.PhotoImage(Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/static/LockIconFull80.png"))
         close_btn = Button(mid_frame, image=lock_icon, command=self.close_lock)
         close_btn.configure(bg="white")
         close_btn.pack(pady=(0, 35))
 
-        img = Image.open("./_Config/ID_Code.png")
+        img = Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/_Config/ID_Code.png")
         photo = ImageTk.PhotoImage(img)
 
         label = Label(mid_frame, image=photo)
@@ -98,10 +90,21 @@ class GUIManager:
         label_text.pack()
         id_update = Thread(target=self.update_id_label())
 
-        main_frame.pack(fill="both", expand=True, padx=20, pady=5)
-        #self.window.attributes("-fullscreen", True)
+        check_comms_btn = Button(mid_frame, text="Aktualisieren", command=self.client.check_connection)
+        check_comms_btn.pack()
+        
+        self.server_ans = StringVar()
+        self.server_ans.set("SERVER....")
+        server_ans_label = Label(mid_frame, textvariable=self.server_ans, font='Times 22')
+        server_ans_label.configure(bg="white")
+        server_ans_label.pack()
+        serv_ans_thread = Thread(target=self.update_serv_ans)
+        serv_ans_thread.start()
 
-        self.window.geometry("800x600")
+        main_frame.pack(fill="both", expand=True, padx=20, pady=5)
+        
+        self.window.attributes("-fullscreen", True)
+        #self.window.geometry("800x600")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.window.configure(bg="white")
         self.window.mainloop()
@@ -117,10 +120,11 @@ class GUIManager:
         except socketio.exceptions.BadNamespaceError:
             print("Server is out")
         self.window.destroy()
+        psutil.Process(os.getpid()).terminate()
 
     def open_manually(self):
         self.win = Toplevel()
-        self.win.geometry("350x50")
+        self.win.geometry("400x100")
         
         self.win.wm_title("Admin access")
         
@@ -133,22 +137,39 @@ class GUIManager:
         Grid.columnconfigure(self.win, 1, weight=1)
         
         submit_btn = Button(self.win, text="Öffnen", command=self.close_modal)
-        submit_btn.grid(row=0, column=3, padx=(0, 5))
+        submit_btn.grid(row=0, column=3, padx=(0, 5), sticky="NE")
+        
+        close_app_btn = Button(self.win, text="App schließen", command=self.close_app)
+        close_app_btn.grid(row=1, column=3, sticky="NE")
+        
 
     def close_modal(self):
         self.client.request_man_open(self.password_txt.get())
         self.win.destroy()
         self.win.update()
-
+        
+    def close_app(self):
+        self.client.request_close_app(self.password_txt.get())
+        self.win.destroy()
+        self.win.update()
+        
+    def update_serv_ans(self):
+        connection_status_update = self.window.after(2000, self.update_serv_ans)
+        self.server_ans.set(self.client.server_ans)
+        self.window.update_idletasks()
+        
     def update_status(self):
         connection_status_update = self.window.after(5000, self.update_status)
+        
+        print(f"status ===>  {self.client.break_all}")
+        if self.client.break_all:
+            self.on_closing()
+    
         if is_connected():
-            print("Update to Connected")
-            self.icon = Image.open("./static/WiFiIcon.png")
+            self.icon = Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/static/WiFiIcon.png")
             self.wifi_label.grid(pady=(0, 0), padx=(0, 0))
         else:
-            print("UPDATE TO DISCONNECTED")
-            self.icon = Image.open("./static/NoInternetIcon.png")
+            self.icon = Image.open("/home/pi/Desktop/unloqr/UnloQR_Client/static/NoInternetIcon.png")
             self.wifi_label.grid(pady=(10, 0), padx=(10, 0))
 
         wifi_icon = ImageTk.PhotoImage(self.icon)
@@ -160,7 +181,6 @@ class GUIManager:
     def update_id_label(self):
         update_id_label = self.window.after(2000, self.update_id_label)
 
-        print("Hello from id label")
         did = self.client.c_man.get_my_id()
         if did != "XXXX":
             self.client.did = did
@@ -169,6 +189,7 @@ class GUIManager:
             self.window.after_cancel(update_id_label)
 
     def close_lock(self):
+        self.client.server_ans = "Sie Können den QR-Code wieder scannen"
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(13, GPIO.OUT)
