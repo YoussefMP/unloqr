@@ -19,9 +19,11 @@ except ModuleNotFoundError:
     print("problem while importing RPi")
 
 client = socketio.Client(reconnection=True, reconnection_attempts=50)
+heartbeat = False
+connected = False
 still_connected = False
-
 server_said_hello = False
+
 
 class Client:
 
@@ -37,37 +39,66 @@ class Client:
         set_client(self)
 
     def connect_to_server(self):
-        my_id = self.c_man.get_my_id()
-        data = {"id": my_id}
         print("Connecting to server...")
-        tries = 0
-        while tries < 10:
-            try:
-                tries += 1
-                self.server_ans = "Wir Überprüfen die Verbindung"
-                client.connect(self.server_url, wait_timeout=5)
-                self.server_ans = "Sie Können den QR-Code scannen"
-                print("_______________EXception?__________")
-                break
-                print("ZES SIRR")
-            except ConnectionError as err:
-                if "Already" in str(err):
-                    self.server_ans = "Nicht mehr mit Server verbunden..."
-                    print("Already Connected")
-                    if tries < 3:
-                        print("Client Disconnected")
-                        client.disconnect()
-                        time.sleep(1)
-                    elif tries > 3:                        
-                        break
-                print(f"Caught Connection Error {tries}, retrying... ")
-                time.sleep(1)
-            except Exception:
-                self.server_ans = "Nicht mehr mit Server verbunden..."
-                time.sleep(1)
+        # tries = 0
+        # while tries < 10:
+        #     try:
+        #         tries += 1
+        #         self.server_ans = "Wir Überprüfen die Verbindung"
+        #         client.connect(self.server_url, wait_timeout=5)
+        #         self.server_ans = "Sie Können den QR-Code scannen"
+        #         break
+        #     except ConnectionError as err:
+        #         if "Already" in str(err):
+        #             self.server_ans = "Nicht mehr mit Server verbunden..."
+        #             print("Already Connected")
+        #             if tries < 3:
+        #                 print("Client Disconnected")
+        #                 client.disconnect()
+        #                 time.sleep(1)
+        #             elif tries > 3:
+        #                 break
+        #         print(f"Caught Connection Error {tries}, retrying... ")
+        #         time.sleep(1)
+        #     except Exception:
+        #         self.server_ans = "Nicht mehr mit Server verbunden..."
+        #         time.sleep(1)
+        global connected
+        global heartbeat
 
-        client.emit("connected?", data)
-        print("finished the connection loop")
+        tries = 0
+        while tries < 7:
+            try:
+                client.connect(self.server_url, wait_timeout=5)
+                connected = True
+                break
+            except ConnectionError as err:
+                print(f"encoutered an error while connecting: {err}")
+                print("Retrying...")
+                tries += 1
+
+        if not connected:
+            from tkinter.messagebox import showerror as ShowError
+            ShowError(title="Crash", message="Server antwortet nicht, bitte neu starten")
+            time.sleep(2)
+            psutil.Process(os.getpid()).terminate()
+
+        def heartbeat():
+            while not Client.break_all:
+                client.emit("heartbeat")
+                print("Boom")
+                time.sleep(0.5)
+                if not server_said_hello:
+                    my_id = self.c_man.get_my_id()
+                    data = {"id": my_id}
+                    client.emit("revive", data)
+
+        hb_thread = Thread(target=lambda: heartbeat(self))
+        if not heartbeat:
+            hb_thread.start()
+            heartbeat = True
+        # client.emit("connected?", data)
+        # print("finished the connection loop")
 
     @client.event
     def request_id(self):
@@ -80,21 +111,22 @@ class Client:
         
         def rerequest_id(cl):
             global server_said_hello 
-            time.sleep(3)
+            time.sleep(2)
             tries = 0
             while not server_said_hello:
                 tries += 1
                 print("Hey SERVER!...")
                 client.emit("get_ID", data)
                 time.sleep(5)
-                if tries % 3 == 0:
-                    cl.connect_to_server()
-                elif tries == 4:
-                    from tkinter.messagebox import showerror as ShowError
-                    ShowError(title="Crash", message="Server antwortet nicht, bitte neu starten")
-                    time.sleep(2)
-                    psutil.Process(os.getpid()).terminate()
-                
+                if not server_said_hello:
+                    if tries % 3 == 0:
+                        cl.connect_to_server()
+                    elif tries == 4:
+                        from tkinter.messagebox import showerror as ShowError
+                        ShowError(title="Crash", message="Server antwortet nicht, bitte neu starten")
+                        time.sleep(2)
+                        psutil.Process(os.getpid()).terminate()
+            server_said_hello = False
         client.emit("get_ID", data)
         re_request_thread = Thread(target=lambda: rerequest_id(self))
         re_request_thread.start()
@@ -131,8 +163,8 @@ class Client:
     def check_connection(self,):
         my_id = self.c_man.get_my_id()
         data = {"id": my_id}
-        print("Am i still connected?")
-        client.emit("connected?", data)
+        # print("Am i still connected?")
+        # client.emit("connected?", data)
         
         def reconnect():
             global still_connected
@@ -165,7 +197,7 @@ class Client:
 def server_says_yes():
     global still_connected
     still_connected = True
-    print("server says yes")
+    print("Tek")
     Client.server_ans = "Verbindung hergestellt"
     
     
@@ -188,8 +220,7 @@ def get_id(event, data={"None": "None"}):
         print("could not send ack")
     finally:
         check_comms()
-    
-    
+
     try:
         if data is None:
             receiver_thread = threading.Thread(target=response_ids["hello"])
@@ -281,12 +312,11 @@ def delete_file(data):
         [f.unlink() for f in Path("./static/uploads/").glob("*") if f.is_file()]
     finally:
         check_comms()
-    
+
+
 @client.on("close_ok")
 def close_ok():
-    
     Client.break_all = True
-    
 
 
 def open_com_chanel(cl):

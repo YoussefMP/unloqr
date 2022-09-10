@@ -118,6 +118,7 @@ def open_lock():
     lock_timer = Thread(target=lambda: start_counter(datetime.now()))
     lock_timer.start()
 
+
 def start_counter(start):
     
     GPIO.setwarnings(False)
@@ -163,7 +164,6 @@ def grant_access(response):
     date = response["date"]
     
     print(f"User Id requesting access is {uid}")
-    
 
     if uid != 1:
         client_obj.server_ans = "Für's Camera lächeln =)"
@@ -189,6 +189,7 @@ def grant_access(response):
         client_obj.upload_file(filepath, filename)
         print("\t\t Done uploading")
 
+
 # Dictionary containing the mapping of the response methods to the server msgs
 response_ids = {
     "hello": read_msg,
@@ -197,4 +198,5 @@ response_ids = {
 }
 
 def check_comms():
-    client_obj.check_connection()
+    # client_obj.check_connection()
+    pass

@@ -9,13 +9,12 @@ import os
 try:
     import RPi.GPIO as GPIO
     __raspberry__ = True
-    print("RPi correctly imported")
 except ModuleNotFoundError:
     __raspberry__ = False
-    print("problem while importing RPi")
 from PIL import Image, ImageTk
 
 break_all = False
+
 
 def is_connected():
     conn = httplib.HTTPSConnection("8888.google", timeout=5)
@@ -114,8 +113,9 @@ class GUIManager:
         return self.client
 
     def on_closing(self):
-        print("DEFINING DICONNECT")
+        print("Closing the app...")
         try:
+            self.client.break_all = True
             self.client.on_disconnect()
         except socketio.exceptions.BadNamespaceError:
             print("Server is out")
@@ -141,7 +141,6 @@ class GUIManager:
         
         close_app_btn = Button(self.win, text="App schließen", command=self.close_app)
         close_app_btn.grid(row=1, column=3, sticky="NE")
-        
 
     def close_modal(self):
         self.client.request_man_open(self.password_txt.get())
@@ -149,10 +148,11 @@ class GUIManager:
         self.win.update()
         
     def close_app(self):
+        self.client.break_all = True
         self.client.request_close_app(self.password_txt.get())
         self.win.destroy()
         self.win.update()
-        
+
     def update_serv_ans(self):
         connection_status_update = self.window.after(2000, self.update_serv_ans)
         self.server_ans.set(self.client.server_ans)
