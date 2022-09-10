@@ -168,7 +168,7 @@ def grant_access(response):
     if uid != 1:
         client_obj.server_ans = "Für's Camera lächeln =)"
         filename = f"{uid}_{did}_{date}.avi"
-        filepath = f"home/pi/Desktop/unloqr/UnloQR_Client/static/uploads/{filename}"
+        filepath = f"/home/pi/Desktop/unloqr/UnloQR_Client/static/uploads/{filename}"
         
 
         print("\t\t call record video")

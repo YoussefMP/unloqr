@@ -8,7 +8,6 @@ import base64
 import time
 from flask import jsonify
 from threading import Thread
-from tkinter import StringVar
 
 try:
     import RPi.GPIO as GPIO
@@ -19,7 +18,7 @@ except ModuleNotFoundError:
     print("problem while importing RPi")
 
 client = socketio.Client(reconnection=True, reconnection_attempts=50)
-heartbeat = False
+heartbeat_status = False
 connected = False
 still_connected = False
 server_said_hello = False
@@ -40,63 +39,55 @@ class Client:
 
     def connect_to_server(self):
         print("Connecting to server...")
-        # tries = 0
-        # while tries < 10:
-        #     try:
-        #         tries += 1
-        #         self.server_ans = "Wir Überprüfen die Verbindung"
-        #         client.connect(self.server_url, wait_timeout=5)
-        #         self.server_ans = "Sie Können den QR-Code scannen"
-        #         break
-        #     except ConnectionError as err:
-        #         if "Already" in str(err):
-        #             self.server_ans = "Nicht mehr mit Server verbunden..."
-        #             print("Already Connected")
-        #             if tries < 3:
-        #                 print("Client Disconnected")
-        #                 client.disconnect()
-        #                 time.sleep(1)
-        #             elif tries > 3:
-        #                 break
-        #         print(f"Caught Connection Error {tries}, retrying... ")
-        #         time.sleep(1)
-        #     except Exception:
-        #         self.server_ans = "Nicht mehr mit Server verbunden..."
-        #         time.sleep(1)
         global connected
-        global heartbeat
+        global heartbeat_status
 
         tries = 0
+        print("Going throught the tries")
         while tries < 7:
             try:
                 client.connect(self.server_url, wait_timeout=5)
                 connected = True
+                self.server_ans = "Verbindung hergestellt"
                 break
             except ConnectionError as err:
                 print(f"encoutered an error while connecting: {err}")
                 print("Retrying...")
                 tries += 1
-
+                if "Already" in str(err):
+                    client.disconnect()
+            time.sleep(2)
+        
         if not connected:
             from tkinter.messagebox import showerror as ShowError
             ShowError(title="Crash", message="Server antwortet nicht, bitte neu starten")
             time.sleep(2)
             psutil.Process(os.getpid()).terminate()
-
-        def heartbeat():
-            while not Client.break_all:
+        
+        print("Defining Heartbeat")
+        def heartbeat(me):
+            while not me.break_all:
                 client.emit("heartbeat")
                 print("Boom")
-                time.sleep(0.5)
+                time.sleep(1)
                 if not server_said_hello:
                     my_id = self.c_man.get_my_id()
                     data = {"id": my_id}
-                    client.emit("revive", data)
-
+                    try:
+                        client.emit("revive", data) 
+                    except:
+                        me.server_ans= "Warten Sie bitte, wir müssen die Verbindung überprüfen"
+                        client.disconnect()
+                        time.sleep(2)
+                        self.connect_to_server()
+                    
+                else:
+                    me.server_ans= "Warten Sie bitte, wir müssen die Verbindung überprüfen"
+        print("Here")
         hb_thread = Thread(target=lambda: heartbeat(self))
-        if not heartbeat:
+        if not heartbeat_status:
             hb_thread.start()
-            heartbeat = True
+            heartbeat_status = True
         # client.emit("connected?", data)
         # print("finished the connection loop")
 

@@ -23,8 +23,6 @@ def is_connected():
         return True
     except Exception:
         return False
-    finally:
-        conn.close()
 
 
 class GUIManager:
@@ -102,8 +100,8 @@ class GUIManager:
 
         main_frame.pack(fill="both", expand=True, padx=20, pady=5)
         
-        self.window.attributes("-fullscreen", True)
-        #self.window.geometry("800x600")
+        #self.window.attributes("-fullscreen", True)
+        self.window.geometry("800x600")
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.window.configure(bg="white")
         self.window.mainloop()
@@ -160,8 +158,7 @@ class GUIManager:
         
     def update_status(self):
         connection_status_update = self.window.after(5000, self.update_status)
-        
-        print(f"status ===>  {self.client.break_all}")
+
         if self.client.break_all:
             self.on_closing()
     
